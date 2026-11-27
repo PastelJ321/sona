@@ -38,19 +38,18 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
         } as React.CSSProperties
       }
     >
-      {/* Top Exhibition Hero */}
       <section className="pd-hero">
         <div className="container">
           <div className="pd-breadcrumb">
             <button
               type="button"
               className="pd-back mono"
-              onClick={() => onNavigate('/', { hash: 'works' })}
+              onClick={() => onNavigate('/')}
             >
-              ← ALL WORKS
+              ← 3D 공간으로
             </button>
             <span className="mono pd-index">
-              EXHIBITION {project.indexLabel} / {String(PROJECTS.length).padStart(2, '0')}
+              {project.indexLabel} / {String(PROJECTS.length).padStart(2, '0')}
             </span>
           </div>
 
@@ -107,7 +106,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
 
             <dl className="pd-spec-card">
               <div>
-                <dt className="mono">제작자</dt>
+                <dt className="mono">제작</dt>
                 <dd>
                   <strong>{project.creator}</strong>
                   <span>{project.creatorRole}</span>
@@ -117,7 +116,6 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
                 <dt className="mono">분야</dt>
                 <dd>
                   <strong>{project.category}</strong>
-                  <span>{project.categoryEn}</span>
                 </dd>
               </div>
               <div>
@@ -127,7 +125,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
                 </dd>
               </div>
               <div>
-                <dt className="mono">공식 주소</dt>
+                <dt className="mono">주소</dt>
                 <dd>
                   <a
                     href={project.externalUrl}
@@ -142,7 +140,6 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
             </dl>
           </div>
 
-          {/* Interactive Full-Scale Gallery Stage */}
           <div className="pd-gallery">
             <div className="pd-gallery__stage">
               <div
@@ -164,7 +161,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
               </div>
             </div>
 
-            <div className="pd-gallery__thumbs" role="tablist" aria-label="전시 화면 목록">
+            <div className="pd-gallery__thumbs" role="tablist" aria-label="화면 선택">
               {project.screenshots.map((shot, idx) => (
                 <button
                   key={shot.id}
@@ -176,7 +173,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
                 >
                   <img src={shot.src} alt="" loading="lazy" />
                   <div>
-                    <span className="mono">0{idx + 1} · {shot.badge}</span>
+                    <span className="mono">0{idx + 1}</span>
                     <strong>{shot.label}</strong>
                   </div>
                 </button>
@@ -189,15 +186,14 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
       <SignalHorizon
         tone="light"
         accent={project.id === 'seojun-arcade' ? '#F4654D' : '#5B75FF'}
-        label={`${project.englishTitle} // EXHIBITION NOTES`}
+        label={project.englishTitle}
       />
 
-      {/* Editorial Narrative & Highlights on Porcelain */}
       <section className="pd-essay">
         <div className="container pd-essay__grid">
           <div>
-            <span className="eyebrow mono">OVERVIEW</span>
-            <h2 className="section-title">작품 소개</h2>
+            <span className="eyebrow mono">INFO</span>
+            <h2 className="section-title">소개</h2>
             <div className="pd-essay__paragraphs">
               {project.extendedDescription.map((para, i) => (
                 <p key={i}>{para}</p>
@@ -206,7 +202,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
 
             {project.subItems && (
               <div className="pd-subitems">
-                <span className="eyebrow mono">PLAYABLE GAMES</span>
+                <span className="eyebrow mono">GAMES</span>
                 <div className="pd-subitems__list">
                   {project.subItems.map((game) => (
                     <div key={game.title} className="pd-subitem-card">
@@ -230,14 +226,14 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
 
             {project.formatIcons && (
               <div className="pd-formats">
-                <span className="eyebrow mono">OFFICIAL FORMAT ICONS & SUPPORT</span>
+                <span className="eyebrow mono">FORMATS</span>
                 <div className="format-strip format-strip--essay">
                   {project.formatIcons.map((fmt) => (
                     <div key={fmt.code} className="format-chip format-chip--essay">
                       <img src={fmt.src} alt={`${fmt.code} 아이콘`} width={40} height={40} />
                       <div>
                         <strong className="mono">{fmt.code}</strong>
-                        <span>{fmt.label} · {fmt.note}</span>
+                        <span>{fmt.note}</span>
                       </div>
                     </div>
                   ))}
@@ -247,8 +243,8 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
           </div>
 
           <div className="pd-highlights">
-            <span className="eyebrow mono">KEY CHARACTERISTICS</span>
-            <h2 className="section-title">주요 특징</h2>
+            <span className="eyebrow mono">DETAILS</span>
+            <h2 className="section-title">특징</h2>
             <dl className="pd-highlight-list">
               {project.highlights.map((hl) => (
                 <div key={hl.index} className="pd-highlight-item">
@@ -263,7 +259,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
 
             {project.honestNotes && project.honestNotes.length > 0 && (
               <div className="pd-honest-box">
-                <span className="mono pd-honest-box__label">PROJECT STATUS & SCOPE</span>
+                <span className="mono pd-honest-box__label">참고</span>
                 <ul>
                   {project.honestNotes.map((note, idx) => (
                     <li key={idx}>{note}</li>
@@ -275,14 +271,13 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
         </div>
       </section>
 
-      {/* Next Exhibition Navigation */}
       <section className="pd-next">
         <div className="container pd-next__inner">
           <div>
-            <span className="eyebrow mono">NEXT EXHIBITION</span>
+            <span className="eyebrow mono">NEXT</span>
             <h2 className="pd-next__title">{nextProject.title}</h2>
             <p className="pd-next__sub">
-              {nextProject.creator} · {nextProject.category} · {nextProject.tagline}
+              {nextProject.creator} · {nextProject.tagline}
             </p>
           </div>
           <button
@@ -293,7 +288,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
               onNavigate(`/works/${nextProject.slug}`);
             }}
           >
-            <span>다음 전시로 이동</span>
+            <span>다음 작품 보기</span>
             <span aria-hidden="true">→</span>
           </button>
         </div>

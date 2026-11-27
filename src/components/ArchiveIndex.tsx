@@ -47,7 +47,7 @@ export function ArchiveIndex({
   return (
     <div className="archive-block">
       <div className="archive-controls">
-        <div className="archive-filters" role="group" aria-label="카테고리 필터">
+        <div className="archive-filters" role="group" aria-label="분야 필터">
           {(['all', '게임', '소프트웨어'] as const).map((cat) => (
             <button
               key={cat}
@@ -56,18 +56,18 @@ export function ArchiveIndex({
               aria-pressed={category === cat}
               onClick={() => setCategory(cat)}
             >
-              {cat === 'all' ? '전체 분야' : cat}
+              {cat === 'all' ? '전체' : cat}
             </button>
           ))}
         </div>
 
         <div className="archive-controls__right">
-          <div className="archive-filters" role="group" aria-label="제작 구분 필터">
+          <div className="archive-filters" role="group" aria-label="제작 구분">
             {(
               [
-                { id: 'all', label: '전체 구분' },
+                { id: 'all', label: '모두 보기' },
                 { id: 'individual', label: '개인 작품' },
-                { id: 'member-linked', label: '부원·연계' },
+                { id: 'member-linked', label: '연계 프로젝트' },
               ] as const
             ).map((item) => (
               <button
@@ -94,7 +94,7 @@ export function ArchiveIndex({
                 aria-pressed={layoutMode === 'index'}
                 onClick={() => setLayoutMode('index')}
               >
-                인덱스
+                목록
               </button>
               <button
                 type="button"
@@ -113,17 +113,16 @@ export function ArchiveIndex({
 
       {groupedByYear.length === 0 ? (
         <div className="archive-empty">
-          <p className="mono">NO MATCHING ENTRIES</p>
-          <p>선택한 조건에 해당하는 등록 작품이 없습니다.</p>
+          <p>조건에 맞는 작품이 없습니다.</p>
           <button
             type="button"
-            className="btn btn--outline-dark"
+            className="btn btn--outline-dark btn--sm"
             onClick={() => {
               setCategory('all');
               setAuthorship('all');
             }}
           >
-            필터 초기화
+            필터 지우기
           </button>
         </div>
       ) : (
@@ -132,9 +131,7 @@ export function ArchiveIndex({
             <div className="archive-year-head">
               <span className="archive-year-head__year mono">{year}</span>
               <span className="archive-year-head__line" aria-hidden="true" />
-              <span className="archive-year-head__count mono">
-                {String(items.length).padStart(2, '0')} REGISTERED
-              </span>
+              <span className="archive-year-head__count mono">{items.length} WORKS</span>
             </div>
 
             {layoutMode === 'index' || compact ? (
@@ -155,7 +152,7 @@ export function ArchiveIndex({
                       type="button"
                       className="archive-board-card__media"
                       onClick={() => onOpenProject(project.slug)}
-                      aria-label={`${project.title} 전시 상세 페이지 열기`}
+                      aria-label={`${project.title} 상세 보기`}
                     >
                       <img
                         src={project.artwork.coverSrc}
@@ -188,7 +185,7 @@ export function ArchiveIndex({
                             rel="noopener noreferrer"
                             className="text-action"
                           >
-                            방문 ↗
+                            열기 ↗
                           </a>
                         </div>
                       </div>
@@ -201,23 +198,15 @@ export function ArchiveIndex({
         ))
       )}
 
-      {/* Honest open-archive note — never filled with fake projects */}
       <div className="archive-colophon">
-        <div>
-          <span className="mono archive-colophon__code">ARCHIVE ARCHITECTURE // EXTENSIBLE</span>
-          <p>
-            현재 {PROJECTS.length}개의 실제 작품이 등재되어 있습니다. 앞으로 SONA 부원들이
-            완성하는 새 게임과 소프트웨어는 이 연도별 아카이브 구조에 순차적으로 기록됩니다.
-          </p>
-        </div>
+        <p>새 작업물이 나오면 이 목록에 이어서 추가합니다.</p>
         {compact && onOpenFullArchive && (
           <button
             type="button"
-            className="btn btn--outline-dark"
+            className="btn btn--outline-dark btn--sm"
             onClick={onOpenFullArchive}
           >
-            <span>전체 아카이브 열기</span>
-            <span aria-hidden="true">→</span>
+            <span>전체 목록 →</span>
           </button>
         )}
       </div>
@@ -247,7 +236,7 @@ function ArchiveRow({
 
       <div className="archive-row__main">
         <div className="archive-row__meta mono">
-          <span>NO.{project.indexLabel}</span>
+          <span>{project.indexLabel}</span>
           <span>·</span>
           <span>{project.category}</span>
           <span>·</span>
@@ -266,7 +255,7 @@ function ArchiveRow({
       </div>
 
       <div className="archive-row__creator">
-        <span className="mono">CREATOR</span>
+        <span className="mono">제작</span>
         <strong>{project.creator}</strong>
         <span className="archive-row__status">{project.status}</span>
       </div>
@@ -277,8 +266,7 @@ function ArchiveRow({
           className="btn btn--outline-dark btn--sm"
           onClick={() => onOpenProject(project.slug)}
         >
-          <span>전시 보기</span>
-          <span aria-hidden="true">→</span>
+          <span>상세 →</span>
         </button>
         <a
           href={project.externalUrl}
@@ -286,8 +274,7 @@ function ArchiveRow({
           rel="noopener noreferrer"
           className="btn btn--dark btn--sm"
         >
-          <span>열기</span>
-          <span aria-hidden="true">↗</span>
+          <span>열기 ↗</span>
         </a>
       </div>
     </li>

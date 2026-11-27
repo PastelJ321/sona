@@ -12,24 +12,23 @@ export function ArchivePage({ onNavigate }: ArchivePageProps) {
       <section className="subpage-hero">
         <div className="container subpage-hero__grid">
           <div>
-            <span className="eyebrow mono">DIGITAL ARCHIVE // INDEX</span>
-            <h1 className="subpage-title">SONA 아카이브</h1>
+            <span className="eyebrow mono">SONA · ARCHIVE</span>
+            <h1 className="subpage-title">프로젝트 기록</h1>
           </div>
           <div className="subpage-hero__meta">
             <p className="subpage-lead">
-              양일고등학교 코딩동아리 SONA에서 완성하고 공개한 디지털 프로젝트를
-              연도와 분야별로 정리해 보관합니다.
+              부원들이 만든 게임과 프로그램을 연도별로 모아 두었습니다.
             </p>
             <div className="subpage-stats mono">
-              <span>REGISTERED: 0{PROJECTS.length}</span>
+              <span>{PROJECTS.length}개 등록</span>
               <span>·</span>
-              <span>ACTIVE YEAR: 2026</span>
+              <span>2026</span>
             </div>
           </div>
         </div>
       </section>
 
-      <SignalHorizon tone="light" accent="#5B75FF" label="ARCHIVE // FILTERABLE INDEX" />
+      <SignalHorizon tone="light" accent="#5B75FF" label="ARCHIVE · 2026" />
 
       <section className="subpage-body">
         <div className="container">

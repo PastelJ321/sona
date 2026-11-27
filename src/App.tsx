@@ -15,14 +15,14 @@ export function App() {
 
   useEffect(() => {
     if (route.view === 'home') {
-      document.title = 'SONA — 양일고등학교 코딩동아리 디지털 아카이브';
+      document.title = 'SONA — 양일고등학교 코딩동아리';
     } else if (route.view === 'archive') {
-      document.title = '아카이브 — SONA 양일고등학교 코딩동아리';
+      document.title = '프로젝트 기록 — SONA';
     } else if (route.view === 'about') {
-      document.title = '소개 — SONA 양일고등학교 코딩동아리';
+      document.title = '소개 — SONA';
     } else if (route.view === 'project') {
       const p = getProjectBySlug(route.slug);
-      document.title = p ? `${p.title} — SONA 전시` : '작품 전시 — SONA';
+      document.title = p ? `${p.title} — SONA` : '작품 — SONA';
     }
   }, [route]);
 
@@ -49,7 +49,6 @@ export function App() {
 
       <SiteFooter onNavigate={navigate} />
 
-      {/* Subtle Signal Curtain during internal route switches (never delays external links) */}
       <div
         className={`route-curtain ${isTransitioning ? 'is-visible' : ''}`}
         aria-hidden="true"

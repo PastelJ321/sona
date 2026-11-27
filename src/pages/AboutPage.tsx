@@ -12,33 +12,52 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       <section className="subpage-hero">
         <div className="container subpage-hero__grid">
           <div>
-            <span className="eyebrow mono">ABOUT // YANGIL HIGH SCHOOL</span>
-            <h1 className="subpage-title">
-              직접 만들어 보고,
-              <br />
-              공유하는 동아리
-            </h1>
+            <span className="eyebrow mono">SONA · 양일고등학교</span>
+            <h1 className="subpage-title">소나 소개</h1>
           </div>
           <div className="subpage-hero__meta">
-            <p className="subpage-lead">{CLUB_INFO.aboutSummary[0]}</p>
+            <p className="subpage-lead">{CLUB_INFO.aboutParagraphs[0]}</p>
           </div>
         </div>
       </section>
 
-      <SignalHorizon tone="light" accent="#F4654D" label="SONA // CLUB STATEMENT" />
+      <SignalHorizon tone="light" accent="#F4654D" label="SONA · ABOUT" />
 
       <section className="subpage-body">
         <div className="container about-layout">
           <div className="about-col-main">
-            <h2>SONA가 기록하는 방식</h2>
-            <p className="about-paragraph">{CLUB_INFO.aboutSummary[1]}</p>
+            <h2>우리가 만드는 것들</h2>
+            <p className="about-paragraph">{CLUB_INFO.aboutParagraphs[1]}</p>
 
-            <div className="about-principles">
-              {CLUB_INFO.principles.map((p) => (
-                <article key={p.index} className="about-principle-card">
-                  <span className="mono about-principle-card__num">{p.index}</span>
-                  <h3>{p.title}</h3>
-                  <p>{p.body}</p>
+            <div className="about-works-list">
+              {PROJECTS.map((project) => (
+                <article key={project.id} className="about-work-item">
+                  <div className="about-work-item__meta mono">
+                    <span>{project.year}</span>
+                    <span>·</span>
+                    <span>{project.authorshipLabel}</span>
+                    <span>·</span>
+                    <span>{project.creator}</span>
+                  </div>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <div className="about-work-item__links">
+                    <button
+                      type="button"
+                      className="btn btn--outline-dark btn--sm"
+                      onClick={() => onNavigate(`/works/${project.slug}`)}
+                    >
+                      <span>상세 보기 →</span>
+                    </button>
+                    <a
+                      href={project.externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn--dark btn--sm"
+                    >
+                      <span>{project.externalLabel} ↗</span>
+                    </a>
+                  </div>
                 </article>
               ))}
             </div>
@@ -46,22 +65,16 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
 
           <aside className="about-sidebar">
             <div className="about-info-box">
-              <span className="mono about-info-box__label">ATELIER SPEC</span>
+              <span className="mono about-info-box__label">INFO</span>
               <dl>
+                {CLUB_INFO.facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt>{fact.label}</dt>
+                    <dd>{fact.value}</dd>
+                  </div>
+                ))}
                 <div>
-                  <dt>동아리</dt>
-                  <dd>양일고등학교 코딩동아리 SONA</dd>
-                </div>
-                <div>
-                  <dt>등록 작품</dt>
-                  <dd>{PROJECTS.length}개 (서준이네 오락실, Asterism Write)</dd>
-                </div>
-                <div>
-                  <dt>목표 도메인</dt>
-                  <dd className="mono">sona.quadraj.com</dd>
-                </div>
-                <div>
-                  <dt>웹 구축 · 호스팅</dt>
+                  <dt>웹 호스팅</dt>
                   <dd>
                     <a
                       href={CLUB_INFO.hostPartner.url}
@@ -77,13 +90,13 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             </div>
 
             <div className="about-cta-box">
-              <p>지금 전시 중인 두 작품을 바로 살펴보세요.</p>
+              <p>3D 공간에서 두 작품을 둘러볼 수 있습니다.</p>
               <button
                 type="button"
                 className="btn btn--dark"
-                onClick={() => onNavigate('/', { hash: 'works' })}
+                onClick={() => onNavigate('/')}
               >
-                <span>전시 작품 보러 가기</span>
+                <span>공간으로 돌아가기</span>
                 <span aria-hidden="true">→</span>
               </button>
             </div>

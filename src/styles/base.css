@@ -484,7 +484,21 @@ a {
 
 @media (max-width: 767px) {
   :root {
-    --header-h: 60px;
+    --header-h: 58px;
+  }
+
+  .site-brand__sub {
+    display: none;
+  }
+
+  .site-nav {
+    gap: 3px;
+  }
+
+  .site-nav__link {
+    min-height: 36px;
+    padding: 0 11px;
+    font-size: 13px;
   }
 
   .signal-horizon__wrap {
