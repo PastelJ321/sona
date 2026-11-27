@@ -1,31 +1,27 @@
-# SONA — 양일고등학교 코딩동아리 웹사이트
+# SONA — 양일고등학교 코딩동아리
 
-양일고등학교 코딩동아리 **SONA**의 프로젝트 웹사이트(`sona.quadraj.com`)입니다.  
-마우스 움직임과 자연스러운 스크롤만으로 키네틱 3D 조형물과 부원들이 만든 게임·소프트웨어를 둘러보고 원본 사이트로 바로 이동할 수 있습니다.
+**SONA — Material Signal 2.0**
 
-## 구성
+양일고등학교 코딩동아리 **소나(SONA)**의 공식 프로젝트 웹사이트(`sona.quadraj.com`)입니다.  
+부원들이 제작한 게임과 소프트웨어를 일관된 **Lamella Signal** 시각 언어와 실시간 3D 스튜디오, 에디토리얼 타이포그래피로 전시·기록합니다.
 
-- **Material Signal 3D 스튜디오** (`src/studio/`):
-  - **스튜디오 환경 & PBR 재질** (`StudioEnvironment.ts`, `MaterialLibrary.ts`): 다크/데이라이트 소프트박스 라이트포머 PMREM 환경맵과 절차적 브러시드 알루미늄·비드블라스트 티타늄·광학 유리·곡면 코튼 종이·고광택 래커 폴리머 텍스처.
-  - **스프링 포인터 물리** (`SpringPhysics.ts`): 3단계 가상 질량(광학 유리·기계식 블레이드·구조 프레임)과 포인터 속도 기반 관성 반응.
-  - **히어로 조형물** (`HeroSignalSculpture.ts`): 23개 가공 금속 블레이드와 선반 가공 광학 유리 렌즈로 구성한 키네틱 레조네이터.
-  - **스크롤 연동 3D 전시** (`ArcadeSculpture.ts`, `AsterismSculpture.ts`, `MaterialSignalStudio.ts`): 어두운 바살트 → 벨벳 인디고(서준이네 오락실) → 밝은 데이라이트 포슬린(Asterism Write)으로 이어지는 단일 캔버스 연출.
-- **프로젝트 기록 & 소개** (`src/pages/`): 시맨틱 HTML 기반 작품 목록(`/archive`), 개별 상세 페이지(`/works/:slug`), 동아리 소개(`/about`), WebGL 미지원 대체 화면.
+## 주요 구성
 
-## 새 작품 추가
+- **Arrival Hero**: 23개의 에어포일 알루미늄·티타늄 라멜라와 광학 유리 코어로 구성된 키네틱 시그널 조형물 및 다층 스프링 포인터 반응
+- **Signal Transformation**: 히어로에서 작품 전시로 이어지는 스크롤 연동 위상 전환 브리지
+- **서준이네 오락실 (`01`)**: 염서준 제작 웹게임 포털 — 백라이트 마키·라멜라 스피커·실제 게임 스크린샷 CRT가 결합된 3D 아케이드 스튜디오 + 2종 플레이 포스터 상세 전시
+- **Asterism Write (`02`)**: SONA 부원 · QuadraJ 연계 문서 편집기 — 알루미늄 교정 플레이트, 5장의 곡면 코튼 페이퍼, 삼각 광학 프리즘으로 구성된 데이라이트 아틀리에 + 스위스 포맷 매트릭스 상세 전시
+- **Archive & About**: 커서 연동 미리보기 아카이브(`/archive`)와 동일한 스프링 물리 기반 2D 제너레이티브 시그널 매트릭스(`/about`)
+- **Unified Motion**: 3D·2D·DOM이 공유하는 감쇠 스프링 물리(`src/motion/SignalMotion.ts`)와 5-라멜라 라우트 셔터 전환(`SignalShutter`)
 
-1. 최적화된 프로젝트 이미지를 `public/assets/projects/<project-id>/`에 추가합니다.
-2. `src/data/projects.ts`의 `PROJECTS` 배열에 새 항목을 등록합니다.
+## 개발 및 빌드
 
-## 로컬 실행 및 배포
-
-```sh
+```bash
 npm install
-npm run dev        # 개발 서버
-npm run typecheck  # TypeScript 검사
-npm run lint       # ESLint 검사
-npm run build      # 프로덕션 빌드 (dist/)
+npm run dev
+npm run typecheck
+npm run lint
+npm run build
 ```
 
-- **Cloudflare Pages**: Build command `npm run build`, Output directory `dist` (`public/_redirects`, `public/_headers` 포함).
-- **서체 라이선스**: IBM Plex Sans KR, IBM Plex Mono (SIL OFL 1.1, `public/fonts/`).
+Cloudflare Pages 정적 배포용 `public/_redirects` 및 `public/_headers`가 포함되어 있습니다.

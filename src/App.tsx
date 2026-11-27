@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SignalShutter } from './components/SignalShutter';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteNavigation } from './components/SiteNavigation';
 import { getProjectBySlug } from './data/projects';
@@ -6,13 +7,14 @@ import { useViewportProfile } from './hooks/useViewportProfile';
 import { useRouter } from './lib/router';
 import { AboutPage } from './pages/AboutPage';
 import { ArchivePage } from './pages/ArchivePage';
-import { HomePage } from './pages/HomePage';
+import { HomePage, type HomeChapterId } from './pages/HomePage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
 
 export function App() {
   const viewport = useViewportProfile();
   const { route, navigate, isTransitioning } = useRouter();
   const [isLightHomeSurface, setIsLightHomeSurface] = useState(false);
+  const [activeHomeChapter, setActiveHomeChapter] = useState<HomeChapterId>('hero');
 
   useEffect(() => {
     if (route.view === 'home') {
@@ -27,6 +29,16 @@ export function App() {
     }
   }, [route]);
 
+  const headerTone: 'dark' | 'dark-solid' | 'light' =
+    route.view === 'home'
+      ? isLightHomeSurface
+        ? 'light'
+        : 'dark'
+      : route.view === 'about' ||
+          (route.view === 'project' && route.slug === 'seojun-arcade')
+        ? 'dark-solid'
+        : 'light';
+
   return (
     <div
       className={`app-shell app-shell--${viewport.deviceClass} ${
@@ -40,7 +52,8 @@ export function App() {
       <SiteNavigation
         route={route}
         viewport={viewport}
-        isLightHomeSurface={isLightHomeSurface}
+        headerTone={headerTone}
+        activeHomeChapter={activeHomeChapter}
         onNavigate={navigate}
       />
 
@@ -50,6 +63,7 @@ export function App() {
             viewport={viewport}
             onNavigate={navigate}
             onHeaderPolarityChange={setIsLightHomeSurface}
+            onActiveChapterChange={setActiveHomeChapter}
           />
         )}
         {route.view === 'project' && (
@@ -61,10 +75,7 @@ export function App() {
 
       <SiteFooter onNavigate={navigate} />
 
-      <div
-        className={`route-curtain ${isTransitioning ? 'is-visible' : ''}`}
-        aria-hidden="true"
-      />
+      <SignalShutter visible={isTransitioning} />
     </div>
   );
 }

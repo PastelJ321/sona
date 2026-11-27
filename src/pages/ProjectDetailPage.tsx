@@ -1,90 +1,302 @@
 import { useState } from 'react';
-import { SignalHorizon } from '../components/SignalHorizon';
-import { PROJECTS, getProjectBySlug } from '../data/projects';
+import { PROJECTS, getProjectBySlug, type ProjectEntry } from '../data/projects';
+import { useMagneticSignal } from '../motion/SignalMotion';
 
 interface ProjectDetailPageProps {
   slug: string;
   onNavigate: (to: string, options?: { hash?: string }) => void;
 }
 
+/**
+ * Movement 06 — Project-Specific Curated Digital Exhibitions.
+ * Each project uses its own personality & visual rhythm (Arcade: Playful Velvet-Indigo Stage
+ * with 2-Up Playable Posters; Asterism: High-Key Architectural Editorial Proof Atelier)
+ * united by SONA's shared hairline grammar, mono coordinates, and kinetic transitions.
+ */
 export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) {
   const project = getProjectBySlug(slug) ?? PROJECTS[0];
-  const [selectedShot, setSelectedShot] = useState(0);
-
-  const currentShot = project.screenshots[selectedShot] ?? project.screenshots[0];
   const nextProject =
     PROJECTS[(PROJECTS.findIndex((p) => p.id === project.id) + 1) % PROJECTS.length];
 
+  if (project.id === 'asterism-write') {
+    return (
+      <AsterismExhibitionPage
+        key={project.id}
+        project={project}
+        nextProject={nextProject}
+        onNavigate={onNavigate}
+      />
+    );
+  }
+
   return (
-    <div
-      className={`project-detail project-detail--${project.theme.polarity}`}
-      style={
-        {
-          '--pd-surface': project.theme.surface,
-          '--pd-elevated': project.theme.surfaceElevated,
-          '--pd-ink': project.theme.ink,
-          '--pd-muted': project.theme.muted,
-          '--pd-accent': project.theme.accent,
-          '--pd-accent-ink': project.theme.accentInk,
-          '--pd-border': project.theme.border,
-          '--pd-badge-bg': project.theme.badgeBg,
-          '--pd-badge-ink': project.theme.badgeInk,
-          '--ex-ink': project.theme.ink,
-          '--ex-accent': project.theme.accent,
-          '--ex-accent-ink': project.theme.accentInk,
-          '--ex-border': project.theme.border,
-          '--ex-badge-bg': project.theme.badgeBg,
-          '--ex-badge-ink': project.theme.badgeInk,
-        } as React.CSSProperties
-      }
-    >
-      <section className="pd-hero">
+    <ArcadeExhibitionPage
+      key={project.id}
+      project={project}
+      nextProject={nextProject}
+      onNavigate={onNavigate}
+    />
+  );
+}
+
+interface ExhibitionPageProps {
+  project: ProjectEntry;
+  nextProject: ProjectEntry;
+  onNavigate: (to: string, options?: { hash?: string }) => void;
+}
+
+/* ============================================================================
+   EXHIBITION 01 — SEOJUN ARCADE (Playful Kinetic Dark-Indigo Digital Poster)
+   ============================================================================ */
+function ArcadeExhibitionPage({ project, nextProject, onNavigate }: ExhibitionPageProps) {
+  const [selectedShot, setSelectedShot] = useState(0);
+  const primaryCtaRef = useMagneticSignal<HTMLAnchorElement>(6);
+  const currentShot = project.screenshots[selectedShot] ?? project.screenshots[0];
+
+  return (
+    <article className="case-exhibition case-exhibition--arcade">
+      <section className="arcade-case-hero">
         <div className="container">
-          <div className="pd-breadcrumb">
+          <div className="case-topbar mono">
             <button
               type="button"
-              className="pd-back mono"
+              className="case-back-btn"
               onClick={() => onNavigate('/')}
             >
-              ← 홈으로
+              ← SONA 홈
             </button>
-            <span className="mono pd-index">
-              {project.indexLabel} / {String(PROJECTS.length).padStart(2, '0')}
-            </span>
+            <span>EXHIBITION {project.indexLabel} / 02</span>
+            <span>{project.creator} · {project.year}</span>
           </div>
 
-          <div className="pd-hero__grid">
-            <div className="pd-hero__main">
-              <div className="pd-tags">
-                <span className="exhibition__pill">{project.authorshipLabel}</span>
-                <span className="mono pd-status">{project.status}</span>
-              </div>
+          <div className="arcade-case-hero__head">
+            <div className="arcade-case-hero__title-col">
+              <span className="arcade-case-kicker mono">
+                {project.authorshipLabel} · {project.status}
+              </span>
+              <h1 className="case-display-title">{project.title}</h1>
+            </div>
 
-              {project.artwork.wordmarkSrc ? (
-                <div className="pd-wordmark-wrap">
-                  <h1 className="sr-only">{project.title}</h1>
-                  <div className="exhibition__wordmark-plate exhibition__wordmark-plate--lg">
-                    <img
-                      src={project.artwork.wordmarkSrc}
-                      alt={project.artwork.wordmarkAlt ?? project.title}
-                      width={420}
-                      height={140}
-                      className="exhibition__wordmark-img"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <h1 className="pd-title">{project.title}</h1>
-              )}
-
-              <p className="pd-tagline">{project.tagline}</p>
-
-              <div className="pd-hero__actions">
+            <div className="arcade-case-hero__lead-col">
+              <p className="case-lead">{project.tagline}</p>
+              <div className="case-actions">
                 <a
+                  ref={primaryCtaRef}
                   href={project.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn exhibition__btn-primary"
+                  className="btn btn--arcade-primary magnetic-target"
+                >
+                  <span>{project.externalLabel}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+                {project.secondaryLinks
+                  .filter((l) => l.kind === 'repo')
+                  .map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn--ghost-light"
+                    >
+                      <span>{link.label}</span>
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Monumental Interactive Cinema Screen Stage */}
+          <div className="arcade-cinema">
+            <div className="arcade-cinema__frame">
+              <div className="arcade-cinema__chrome mono">
+                <span>CRT FEED · {currentShot.badge}</span>
+                <span>{project.externalUrl.replace(/^https?:\/\//, '')}</span>
+              </div>
+              <div className="arcade-cinema__viewport">
+                <img
+                  key={currentShot.id}
+                  src={currentShot.src}
+                  alt={currentShot.alt}
+                  width={currentShot.width}
+                  height={currentShot.height}
+                />
+              </div>
+              <div className="arcade-cinema__caption">
+                <span className="mono">0{selectedShot + 1}</span>
+                <p>{currentShot.caption}</p>
+              </div>
+            </div>
+
+            <div className="arcade-cinema__switcher" role="tablist" aria-label="오락실 화면 선택">
+              {project.screenshots.map((shot, idx) => (
+                <button
+                  key={shot.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={idx === selectedShot}
+                  className={`arcade-switch-btn ${idx === selectedShot ? 'is-active' : ''}`}
+                  onClick={() => setSelectedShot(idx)}
+                >
+                  <span className="mono">0{idx + 1} · {shot.badge}</span>
+                  <strong>{shot.label}</strong>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Playable 2-Up Poster Spread for the Two Games */}
+      {project.subItems && (
+        <section className="arcade-posters" aria-label="수록 게임">
+          <div className="container">
+            <div className="arcade-posters__head">
+              <span className="signal-eyebrow mono">PLAYABLE LINEUP</span>
+              <h2>포털에서 바로 실행하는 게임 두 편.</h2>
+            </div>
+
+            <div className="arcade-posters__grid">
+              {project.subItems.map((game, idx) => (
+                <a
+                  key={game.title}
+                  href={game.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`game-poster game-poster--${idx === 0 ? 'mint' : 'yellow'}`}
+                >
+                  <div className="game-poster__top mono">
+                    <span>GAME 0{idx + 1}</span>
+                    <span>{game.genre}</span>
+                  </div>
+                  <h3 className="game-poster__title">{game.title}</h3>
+                  <p className="game-poster__summary">{game.summary}</p>
+                  <div className="game-poster__cta mono">
+                    <span>{game.ctaLabel}</span>
+                    <span aria-hidden="true">↗</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Concise Editorial Ledger */}
+      <section className="case-editorial-band">
+        <div className="container case-editorial-grid">
+          <div>
+            <span className="signal-eyebrow mono">ABOUT THE PROJECT</span>
+            <div className="case-paragraphs">
+              {project.extendedDescription.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+          </div>
+
+          <div className="case-facts-col">
+            <dl className="case-ruled-list">
+              <div>
+                <dt className="mono">제작</dt>
+                <dd>{project.creator} ({project.creatorRole})</dd>
+              </div>
+              <div>
+                <dt className="mono">주소</dt>
+                <dd>
+                  <a href={project.externalUrl} target="_blank" rel="noopener noreferrer">
+                    {project.externalUrl.replace(/^https?:\/\//, '')} ↗
+                  </a>
+                </dd>
+              </div>
+              {project.highlights.map((hl) => (
+                <div key={hl.index}>
+                  <dt className="mono">{hl.index} · {hl.title}</dt>
+                  <dd>{hl.body}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {project.honestNotes && (
+              <p className="case-marginalia mono">{project.honestNotes[0]}</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <NextWorkCurtain nextProject={nextProject} onNavigate={onNavigate} />
+    </article>
+  );
+}
+
+/* ============================================================================
+   EXHIBITION 02 — ASTERISM WRITE (Luminous Architectural Editorial Proof Sheet)
+   ============================================================================ */
+function AsterismExhibitionPage({ project, nextProject, onNavigate }: ExhibitionPageProps) {
+  const [selectedShot, setSelectedShot] = useState(0);
+  const primaryCtaRef = useMagneticSignal<HTMLAnchorElement>(6);
+  const currentShot = project.screenshots[selectedShot] ?? project.screenshots[0];
+  const isTallPdf = currentShot.height > currentShot.width;
+
+  return (
+    <article className="case-exhibition case-exhibition--asterism">
+      <section className="asterism-case-hero">
+        <div className="container">
+          <div className="case-topbar case-topbar--light mono">
+            <button
+              type="button"
+              className="case-back-btn case-back-btn--light"
+              onClick={() => onNavigate('/')}
+            >
+              ← SONA 홈
+            </button>
+            <span>EXHIBITION {project.indexLabel} / 02</span>
+            <span>{project.status}</span>
+          </div>
+
+          <div className="asterism-case-spread">
+            <div className="asterism-case-spread__brand">
+              <h1 className="sr-only">{project.title}</h1>
+              {project.artwork.wordmarkSrc && (
+                <img
+                  src={project.artwork.wordmarkSrc}
+                  alt={project.artwork.wordmarkAlt ?? project.title}
+                  width={380}
+                  height={126}
+                  className="asterism-case-wordmark"
+                />
+              )}
+              <p className="asterism-case-tagline">{project.tagline}</p>
+            </div>
+
+            <div className="asterism-case-spread__meta">
+              <dl className="asterism-spec-rail">
+                <div>
+                  <dt className="mono">CREATOR</dt>
+                  <dd>{project.creator}</dd>
+                </div>
+                <div>
+                  <dt className="mono">RELEASE</dt>
+                  <dd>{project.status}</dd>
+                </div>
+                <div>
+                  <dt className="mono">URL</dt>
+                  <dd>
+                    <a href={project.externalUrl} target="_blank" rel="noopener noreferrer">
+                      {project.externalUrl.replace(/^https?:\/\//, '')} ↗
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="case-actions">
+                <a
+                  ref={primaryCtaRef}
+                  href={project.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn--asterism-primary magnetic-target"
                 >
                   <span>{project.externalLabel}</span>
                   <span aria-hidden="true">↗</span>
@@ -95,7 +307,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn exhibition__btn-secondary"
+                    className="btn btn--outline-dark"
                   >
                     <span>{link.label}</span>
                     <span aria-hidden="true">↗</span>
@@ -103,196 +315,141 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
                 ))}
               </div>
             </div>
-
-            <dl className="pd-spec-card">
-              <div>
-                <dt className="mono">제작</dt>
-                <dd>
-                  <strong>{project.creator}</strong>
-                  <span>{project.creatorRole}</span>
-                </dd>
-              </div>
-              <div>
-                <dt className="mono">분야</dt>
-                <dd>
-                  <strong>{project.category}</strong>
-                </dd>
-              </div>
-              <div>
-                <dt className="mono">연도</dt>
-                <dd>
-                  <strong className="mono">{project.year}</strong>
-                </dd>
-              </div>
-              <div>
-                <dt className="mono">주소</dt>
-                <dd>
-                  <a
-                    href={project.externalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="pd-url mono"
-                  >
-                    {project.externalUrl.replace(/^https?:\/\//, '')} ↗
-                  </a>
-                </dd>
-              </div>
-            </dl>
           </div>
 
-          <div className="pd-gallery">
-            <div className="pd-gallery__stage">
-              <div
-                className={`pd-gallery__viewport ${
-                  currentShot.height > currentShot.width ? 'is-tall' : ''
-                }`}
-              >
-                <img
-                  key={currentShot.id}
-                  src={currentShot.src}
-                  alt={currentShot.alt}
-                  width={currentShot.width}
-                  height={currentShot.height}
-                />
-              </div>
-              <div className="pd-gallery__caption-bar">
-                <span className="mono pd-gallery__badge">{currentShot.badge}</span>
-                <p>{currentShot.caption}</p>
-              </div>
-            </div>
-
-            <div className="pd-gallery__thumbs" role="tablist" aria-label="화면 선택">
+          {/* Architectural Editorial Proof Sheet Viewer */}
+          <div className="proof-viewer">
+            <div className="proof-viewer__tabs" role="tablist" aria-label="편집기 화면 선택">
               {project.screenshots.map((shot, idx) => (
                 <button
                   key={shot.id}
                   type="button"
                   role="tab"
                   aria-selected={idx === selectedShot}
-                  className={`pd-thumb ${idx === selectedShot ? 'is-active' : ''}`}
+                  className={`proof-tab ${idx === selectedShot ? 'is-active' : ''}`}
                   onClick={() => setSelectedShot(idx)}
                 >
-                  <img src={shot.src} alt="" loading="lazy" />
-                  <div>
-                    <span className="mono">0{idx + 1}</span>
-                    <strong>{shot.label}</strong>
-                  </div>
+                  <span className="mono">FIG. 0{idx + 1}</span>
+                  <strong>{shot.label}</strong>
+                  <small>{shot.badge}</small>
                 </button>
               ))}
             </div>
+
+            <figure className={`proof-viewer__plate ${isTallPdf ? 'is-tall' : ''}`}>
+              <img
+                key={currentShot.id}
+                src={currentShot.src}
+                alt={currentShot.alt}
+                width={currentShot.width}
+                height={currentShot.height}
+              />
+              <figcaption className="proof-viewer__caption">
+                <span className="mono">FIG. 0{selectedShot + 1} · {currentShot.badge}</span>
+                <span>{currentShot.caption}</span>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
-      <SignalHorizon
-        tone="light"
-        accent={project.id === 'seojun-arcade' ? '#F4654D' : '#5B75FF'}
-        label={project.englishTitle}
-      />
+      {/* Swiss Document Format Matrix + Editorial Architecture */}
+      <section className="case-editorial-band case-editorial-band--asterism">
+        <div className="container">
+          {project.formatIcons && (
+            <div className="swiss-format-section">
+              <div className="swiss-format-section__head">
+                <span className="signal-eyebrow mono">SUPPORTED FORMATS</span>
+                <p className="mono">LOCAL BROWSER ENGINE · RUST / WASM</p>
+              </div>
+              <div className="swiss-format-grid">
+                {project.formatIcons.map((fmt) => (
+                  <div key={fmt.code} className="swiss-format-cell">
+                    <img src={fmt.src} alt={`${fmt.code} 아이콘`} width={38} height={38} />
+                    <div>
+                      <strong className="mono">{fmt.code}</strong>
+                      <span>{fmt.note}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-      <section className="pd-essay">
-        <div className="container pd-essay__grid">
-          <div>
-            <span className="eyebrow mono">INFO</span>
-            <h2 className="section-title">소개</h2>
-            <div className="pd-essay__paragraphs">
-              {project.extendedDescription.map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
+          <div className="case-editorial-grid">
+            <div>
+              <span className="signal-eyebrow mono">OVERVIEW</span>
+              <div className="case-paragraphs">
+                {project.extendedDescription.map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
             </div>
 
-            {project.subItems && (
-              <div className="pd-subitems">
-                <span className="eyebrow mono">GAMES</span>
-                <div className="pd-subitems__list">
-                  {project.subItems.map((game) => (
-                    <div key={game.title} className="pd-subitem-card">
-                      <span className="mono pd-subitem-card__genre">{game.genre}</span>
-                      <h3>{game.title}</h3>
-                      <p>{game.summary}</p>
-                      <a
-                        href={game.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn--dark btn--sm"
-                      >
-                        <span>{game.ctaLabel}</span>
-                        <span aria-hidden="true">↗</span>
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="case-facts-col">
+              <dl className="case-ruled-list">
+                {project.highlights.map((hl) => (
+                  <div key={hl.index}>
+                    <dt className="mono">{hl.index} · {hl.title}</dt>
+                    <dd>{hl.body}</dd>
+                  </div>
+                ))}
+              </dl>
 
-            {project.formatIcons && (
-              <div className="pd-formats">
-                <span className="eyebrow mono">FORMATS</span>
-                <div className="format-strip format-strip--essay">
-                  {project.formatIcons.map((fmt) => (
-                    <div key={fmt.code} className="format-chip format-chip--essay">
-                      <img src={fmt.src} alt={`${fmt.code} 아이콘`} width={40} height={40} />
-                      <div>
-                        <strong className="mono">{fmt.code}</strong>
-                        <span>{fmt.note}</span>
-                      </div>
-                    </div>
-                  ))}
+              {project.honestNotes && project.honestNotes.length > 0 && (
+                <div className="asterism-marginalia">
+                  <span className="mono">NOTES · 1.0.0-RC.1</span>
+                  <ul>
+                    {project.honestNotes.map((note, idx) => (
+                      <li key={idx}>{note}</li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div className="pd-highlights">
-            <span className="eyebrow mono">DETAILS</span>
-            <h2 className="section-title">특징</h2>
-            <dl className="pd-highlight-list">
-              {project.highlights.map((hl) => (
-                <div key={hl.index} className="pd-highlight-item">
-                  <dt>
-                    <span className="mono">{hl.index}</span>
-                    {hl.title}
-                  </dt>
-                  <dd>{hl.body}</dd>
-                </div>
-              ))}
-            </dl>
-
-            {project.honestNotes && project.honestNotes.length > 0 && (
-              <div className="pd-honest-box">
-                <span className="mono pd-honest-box__label">참고</span>
-                <ul>
-                  {project.honestNotes.map((note, idx) => (
-                    <li key={idx}>{note}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="pd-next">
-        <div className="container pd-next__inner">
-          <div>
-            <span className="eyebrow mono">NEXT</span>
-            <h2 className="pd-next__title">{nextProject.title}</h2>
-            <p className="pd-next__sub">
-              {nextProject.creator} · {nextProject.tagline}
-            </p>
+      <NextWorkCurtain nextProject={nextProject} onNavigate={onNavigate} />
+    </article>
+  );
+}
+
+/* ============================================================================
+   SHARED FULL-BLEED KINETIC NEXT WORK CURTAIN
+   ============================================================================ */
+function NextWorkCurtain({
+  nextProject,
+  onNavigate,
+}: {
+  nextProject: ProjectEntry;
+  onNavigate: (to: string, options?: { hash?: string }) => void;
+}) {
+  return (
+    <section
+      className={`next-curtain next-curtain--${nextProject.id}`}
+      aria-label="다음 작품으로 이동"
+    >
+      <button
+        type="button"
+        className="next-curtain__trigger"
+        onClick={() => onNavigate(`/works/${nextProject.slug}`)}
+      >
+        <div className="container next-curtain__inner">
+          <div className="next-curtain__meta mono">
+            <span>NEXT EXHIBITION · {nextProject.indexLabel}</span>
+            <span>{nextProject.creator}</span>
           </div>
-          <button
-            type="button"
-            className="btn btn--dark"
-            onClick={() => {
-              setSelectedShot(0);
-              onNavigate(`/works/${nextProject.slug}`);
-            }}
-          >
-            <span>다음 작품 보기</span>
-            <span aria-hidden="true">→</span>
-          </button>
+          <div className="next-curtain__row">
+            <h2 className="next-curtain__title">{nextProject.title}</h2>
+            <span className="next-curtain__arrow" aria-hidden="true">
+              →
+            </span>
+          </div>
+          <p className="next-curtain__sub">{nextProject.tagline}</p>
         </div>
-      </section>
-    </div>
+      </button>
+    </section>
   );
 }

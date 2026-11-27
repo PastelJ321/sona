@@ -1,12 +1,19 @@
 import { CLUB_INFO } from '../data/club';
 import { PROJECTS } from '../data/projects';
+import { useMagneticSignal } from '../motion/SignalMotion';
 import { SonaBrandMark } from './SonaBrandMark';
 
 interface SiteFooterProps {
   onNavigate: (to: string, options?: { hash?: string }) => void;
 }
 
+/**
+ * Movement 08 — Monumental Architectural Colophon Footer.
+ * Grounds the entire site in SONA's dark obsidian basalt & lamella graphic grammar.
+ */
 export function SiteFooter({ onNavigate }: SiteFooterProps) {
+  const topBtnRef = useMagneticSignal<HTMLButtonElement>(6);
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -18,11 +25,20 @@ export function SiteFooter({ onNavigate }: SiteFooterProps) {
 
   return (
     <footer className="site-footer">
+      {/* 5-Lamella Architectural Divider Ribbon */}
+      <div className="site-footer__lamella-rule" aria-hidden="true">
+        <span />
+        <span />
+        <span className="is-accent" />
+        <span />
+        <span />
+      </div>
+
       <div className="container site-footer__inner">
         <div className="site-footer__top">
           <div className="site-footer__brand">
             <div className="site-footer__logo-row">
-              <SonaBrandMark size={32} />
+              <SonaBrandMark size={30} />
               <div>
                 <strong className="site-footer__title">{CLUB_INFO.name}</strong>
                 <span className="site-footer__affil">{CLUB_INFO.affiliation}</span>
@@ -34,7 +50,7 @@ export function SiteFooter({ onNavigate }: SiteFooterProps) {
 
           <div className="site-footer__columns">
             <div className="site-footer__col">
-              <h2 className="site-footer__heading mono">MENU</h2>
+              <h2 className="site-footer__heading mono">INDEX</h2>
               <ul>
                 <li>
                   <a
@@ -115,15 +131,22 @@ export function SiteFooter({ onNavigate }: SiteFooterProps) {
           </div>
         </div>
 
-        <div className="site-footer__bottom">
-          <p className="mono">SONA · YANGIL HIGH SCHOOL CODING CLUB</p>
-          <button
-            type="button"
-            className="site-footer__top-btn mono"
-            onClick={scrollToTop}
-          >
-            <span>TOP ↑</span>
-          </button>
+        {/* Monumental Bleed Wordmark Signature + Tactile Back-to-Top */}
+        <div className="site-footer__monument">
+          <span className="site-footer__wordmark" aria-hidden="true">
+            SONA
+          </span>
+          <div className="site-footer__bottom-bar">
+            <p className="mono">SONA · YANGIL HIGH SCHOOL CODING CLUB · 2026</p>
+            <button
+              ref={topBtnRef}
+              type="button"
+              className="site-footer__top-btn mono magnetic-target"
+              onClick={scrollToTop}
+            >
+              <span>TOP ↑</span>
+            </button>
+          </div>
         </div>
       </div>
     </footer>

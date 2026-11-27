@@ -1,14 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArchiveIndex } from '../components/ArchiveIndex';
-import { SignalHorizon } from '../components/SignalHorizon';
+import { SonaLamellaCanvas } from '../components/SonaLamellaCanvas';
 import { PROJECTS } from '../data/projects';
 import type { ViewportProfile } from '../hooks/useViewportProfile';
+import { useMagneticSignal, useSectionScrollVar } from '../motion/SignalMotion';
 import type { MaterialSignalStudio, ScrollChapters } from '../studio/MaterialSignalStudio';
+
+export type HomeChapterId = 'hero' | 'arcade' | 'asterism' | 'archive';
 
 interface HomePageProps {
   viewport: ViewportProfile;
   onNavigate: (to: string, options?: { hash?: string }) => void;
   onHeaderPolarityChange?: (isLightSurface: boolean) => void;
+  onActiveChapterChange?: (chapter: HomeChapterId) => void;
 }
 
 function clamp01(v: number): number {
@@ -24,13 +28,19 @@ export function HomePage({
   viewport,
   onNavigate,
   onHeaderPolarityChange,
+  onActiveChapterChange,
 }: HomePageProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const studioRef = useRef<MaterialSignalStudio | null>(null);
   const chaptersWrapRef = useRef<HTMLDivElement | null>(null);
   const heroSecRef = useRef<HTMLElement | null>(null);
+  const interludeRef = useSectionScrollVar<HTMLElement>('--bridge-p');
   const arcadeSecRef = useRef<HTMLElement | null>(null);
   const asterismSecRef = useRef<HTMLElement | null>(null);
+  const archiveWrapRef = useRef<HTMLDivElement | null>(null);
+
+  const arcadeCtaRef = useMagneticSignal<HTMLAnchorElement>(6);
+  const asterismCtaRef = useMagneticSignal<HTMLAnchorElement>(6);
 
   const [arcadeShot, setArcadeShot] = useState(0);
   const [asterismShot, setAsterismShot] = useState(0);
@@ -39,36 +49,60 @@ export function HomePage({
   const arcadeProject = PROJECTS[0];
   const asterismProject = PROJECTS[1];
 
-  // Compute exact scroll-choreography blend weights directly from real DOM section geometry
-  const computeScrollChapters = useCallback((): ScrollChapters => {
+  const computeScrollChapters = useCallback((): {
+    chapters: ScrollChapters;
+    activeChapter: HomeChapterId;
+    isLightHeader: boolean;
+  } => {
     const vh = Math.max(1, window.innerHeight);
     const heroRect = heroSecRef.current?.getBoundingClientRect();
+    const interludeRect = interludeRef.current?.getBoundingClientRect();
     const arcadeRect = arcadeSecRef.current?.getBoundingClientRect();
     const asterismRect = asterismSecRef.current?.getBoundingClientRect();
+    const archiveRect = archiveWrapRef.current?.getBoundingClientRect();
 
-    // Hero exits completely before Exhibition 01 settles into center stage
-    const heroExit = heroRect ? smoothRange(-heroRect.top / vh, 0.08, 0.66) : 0;
+    // Movement 01 -> 02: Hero sculpture fans wide open and clears before Arcade enters
+    const heroExit = heroRect ? smoothRange(-heroRect.top / vh, 0.08, 0.78) : 0;
 
-    // Arcade reaches 1.0 when centered and exits cleanly to 0 before Asterism enters
-    let arcadeFocus = 0;
-    if (arcadeRect) {
-      const centerDist = Math.abs(arcadeRect.top + arcadeRect.height * 0.5 - vh * 0.5) / vh;
-      arcadeFocus = 1 - smoothRange(centerDist, 0.14, 0.54);
+    // Movement 02: Signal Transformation typographic bridge between Hero & Exhibition 01
+    let interludeFocus = 0;
+    if (interludeRect) {
+      const centerDist =
+        Math.abs(interludeRect.top + interludeRect.height * 0.5 - vh * 0.5) / vh;
+      interludeFocus = 1 - smoothRange(centerDist, 0.16, 0.62);
     }
 
-    // Asterism reaches 1.0 when centered and triggers bright daylight studio polarity
+    // Movement 04: Asterism Write (decisive transition into warm alabaster gallery daylight)
     let asterismFocus = 0;
     let daylightBlend = 0;
     if (asterismRect) {
       const centerDist = Math.abs(asterismRect.top + asterismRect.height * 0.5 - vh * 0.5) / vh;
-      asterismFocus = 1 - smoothRange(centerDist, 0.14, 0.58);
-      daylightBlend = smoothRange(1 - asterismRect.top / vh, 0.3, 0.72);
+      asterismFocus = 1 - smoothRange(centerDist, 0.14, 0.56);
+      daylightBlend = smoothRange(1 - asterismRect.top / vh, 0.14, 0.44);
     }
 
-    return { heroExit, arcadeFocus, asterismFocus, daylightBlend };
-  }, []);
+    // Movement 03: 서준이네 오락실 — guaranteed fully exited once Daylight Asterism enters
+    let arcadeFocus = 0;
+    if (arcadeRect) {
+      const centerDist = Math.abs(arcadeRect.top + arcadeRect.height * 0.5 - vh * 0.5) / vh;
+      const rawArcade = 1 - smoothRange(centerDist, 0.12, 0.48);
+      arcadeFocus = rawArcade * (1 - smoothRange(daylightBlend, 0.05, 0.38));
+    }
 
-  // Lazy-load the Three.js Material Signal Photographic Studio
+    const inArchive = Boolean(archiveRect && archiveRect.top < vh * 0.35);
+
+    let activeChapter: HomeChapterId = 'hero';
+    if (inArchive) activeChapter = 'archive';
+    else if (asterismFocus > 0.35 || daylightBlend > 0.4) activeChapter = 'asterism';
+    else if (arcadeFocus > 0.32) activeChapter = 'arcade';
+
+    return {
+      chapters: { heroExit, interludeFocus, arcadeFocus, asterismFocus, daylightBlend },
+      activeChapter,
+      isLightHeader: daylightBlend > 0.18 || inArchive,
+    };
+  }, [interludeRef]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const wrap = chaptersWrapRef.current;
@@ -83,9 +117,10 @@ export function HomePage({
     const syncScroll = () => {
       cancelAnimationFrame(rafScroll);
       rafScroll = requestAnimationFrame(() => {
-        const chapters = computeScrollChapters();
+        const { chapters, activeChapter, isLightHeader } = computeScrollChapters();
         studioRef.current?.setScrollChapters(chapters);
-        onHeaderPolarityChange?.(chapters.daylightBlend > 0.52);
+        onHeaderPolarityChange?.(isLightHeader);
+        onActiveChapterChange?.(activeChapter);
       });
     };
 
@@ -151,9 +186,8 @@ export function HomePage({
       studioRef.current = null;
       onHeaderPolarityChange?.(false);
     };
-    // Initial studio mount; deviceClass/reducedMotion handled in effect below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [computeScrollChapters, onHeaderPolarityChange]);
+  }, [computeScrollChapters, onHeaderPolarityChange, onActiveChapterChange]);
 
   useEffect(() => {
     studioRef.current?.updateEnvironment({
@@ -198,13 +232,17 @@ export function HomePage({
         className={`studio-chapters ${webglFailed ? 'is-fallback' : ''}`}
         onPointerUp={handleStageTap}
       >
-        {!webglFailed && (
+        {!webglFailed ? (
           <div className="studio-canvas-pin" aria-hidden="true">
             <canvas ref={canvasRef} className="studio-canvas" />
           </div>
+        ) : (
+          <div className="studio-canvas-pin studio-canvas-pin--fallback" aria-hidden="true">
+            <SonaLamellaCanvas variant="fallback" />
+          </div>
         )}
 
-        {/* CHAPTER 1 — HERO: Kinetic Signal Sculpture + Asymmetric Editorial Typography */}
+        {/* MOVEMENT 01 — ARRIVAL / SONA HERO */}
         <section
           ref={heroSecRef}
           className="chapter chapter--hero"
@@ -212,8 +250,9 @@ export function HomePage({
         >
           <div className="container chapter-hero__layout">
             <div className="chapter-hero__top-meta mono">
-              <span>양일고등학교 코딩동아리</span>
-              <span>2026 · 02 WORKS</span>
+              <span className="meta-bracket">[ 양일고등학교 코딩동아리 ]</span>
+              <span className="chapter-hero__top-mid">MATERIAL SIGNAL · 2026</span>
+              <span>02 WORKS</span>
             </div>
 
             <div className="chapter-hero__bottom">
@@ -235,8 +274,8 @@ export function HomePage({
                     onClick={() => scrollToSection('work-seojun-arcade')}
                   >
                     <span className="mono">01</span>
-                    <span>서준이네 오락실</span>
-                    <span aria-hidden="true">↓</span>
+                    <span className="hero-index-link__name">서준이네 오락실</span>
+                    <span className="hero-index-link__meta mono">염서준 ↓</span>
                   </button>
                   <button
                     type="button"
@@ -244,8 +283,8 @@ export function HomePage({
                     onClick={() => scrollToSection('work-asterism-write')}
                   >
                     <span className="mono">02</span>
-                    <span>Asterism Write</span>
-                    <span aria-hidden="true">↓</span>
+                    <span className="hero-index-link__name">Asterism Write</span>
+                    <span className="hero-index-link__meta mono">편집기 ↓</span>
                   </button>
                 </div>
               </div>
@@ -253,7 +292,29 @@ export function HomePage({
           </div>
         </section>
 
-        {/* CHAPTER 2 — EXHIBITION 01: 서준이네 오락실 (Velvet Indigo Studio, Left Editorial) */}
+        {/* MOVEMENT 02 — SIGNAL TRANSFORMATION (Hero -> Works Phase Bridge) */}
+        <section
+          ref={interludeRef}
+          className="chapter-bridge"
+          aria-label="작품 전시 도입"
+        >
+          <div className="container chapter-bridge__inner">
+            <div className="chapter-bridge__rail" aria-hidden="true">
+              <span className="chapter-bridge__slit" />
+              <span className="chapter-bridge__slit" />
+              <span className="chapter-bridge__slit chapter-bridge__slit--accent" />
+              <span className="chapter-bridge__slit" />
+              <span className="chapter-bridge__slit" />
+            </div>
+
+            <div className="chapter-bridge__copy">
+              <span className="mono chapter-bridge__code">SELECTED WORKS · 01 — 02</span>
+              <p className="chapter-bridge__statement">우리가 만든 것들.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* MOVEMENT 03 — SEOJUN ARCADE (Borderless Monopo-Style Editorial × Full-Bleed 3D Stage) */}
         <section
           ref={arcadeSecRef}
           id="work-seojun-arcade"
@@ -261,28 +322,26 @@ export function HomePage({
           aria-labelledby="arcade-heading"
         >
           <div className="container chapter-exhibition__grid chapter-exhibition__grid--left">
-            <div className="exhibition-sheet exhibition-sheet--dark">
-              <div className="exhibition-sheet__eyebrow mono">
-                <span>01 / 02</span>
-                <span>·</span>
-                <span>{arcadeProject.creator}</span>
-                <span>·</span>
-                <span>{arcadeProject.authorshipLabel}</span>
+            <div className="editorial-stage editorial-stage--arcade">
+              <div className="editorial-stage__top mono">
+                <span className="editorial-stage__num">01</span>
+                <span className="editorial-stage__rule" aria-hidden="true" />
+                <span>{arcadeProject.creator} · {arcadeProject.authorshipLabel}</span>
               </div>
 
-              <h2 id="arcade-heading" className="exhibition-sheet__title">
-                {arcadeProject.title}
+              <h2 id="arcade-heading" className="editorial-stage__title editorial-stage__title--arcade">
+                <span>서준이네</span>
+                <span>오락실</span>
               </h2>
 
-              <p className="exhibition-sheet__lead">
+              <p className="editorial-stage__lead">
                 염서준이 만든 웹게임 모음.
               </p>
-              <p className="exhibition-sheet__body">
+              <p className="editorial-stage__body">
                 탭 클리커 〈키 키우기〉와 학교생활 시뮬레이션 〈나는 이번생은
                 양일고다!〉를 설치 없이 브라우저에서 바로 할 수 있습니다.
               </p>
 
-              {/* Fallback static image when WebGL is unavailable */}
               {webglFailed && (
                 <figure className="exhibition-fallback-shot">
                   <img
@@ -292,9 +351,9 @@ export function HomePage({
                 </figure>
               )}
 
-              {/* Tactile screen tabs drive the real 3D CRT monitor & button physics */}
+              {/* Tactile Hairline Screen Selector driving real 3D CRT monitor & button physics */}
               <div
-                className="studio-tabs studio-tabs--arcade"
+                className="signal-tabs signal-tabs--arcade"
                 role="tablist"
                 aria-label="서준이네 오락실 화면 선택"
               >
@@ -304,45 +363,48 @@ export function HomePage({
                     type="button"
                     role="tab"
                     aria-selected={arcadeShot === idx}
-                    className={`studio-tab ${arcadeShot === idx ? 'is-active' : ''}`}
+                    className={`signal-tab ${arcadeShot === idx ? 'is-active' : ''}`}
                     onClick={() => handleSelectArcadeShot(idx)}
                   >
-                    {shot.label}
+                    <span className="mono signal-tab__idx">0{idx + 1}</span>
+                    <span>{shot.label}</span>
                   </button>
                 ))}
               </div>
 
-              <div className="exhibition-sublinks">
+              {/* Ruled Direct Game Launchers */}
+              <div className="ruled-sublinks">
                 {arcadeProject.subItems?.map((game) => (
                   <a
                     key={game.title}
                     href={game.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="exhibition-sublink"
+                    className="ruled-sublink"
                   >
-                    <span>{game.title}</span>
-                    <span className="mono">{game.genre} ↗</span>
+                    <span className="ruled-sublink__title">{game.title}</span>
+                    <span className="ruled-sublink__meta mono">{game.genre} ↗</span>
                   </a>
                 ))}
               </div>
 
-              <div className="exhibition-sheet__actions">
+              <div className="editorial-stage__actions">
                 <a
+                  ref={arcadeCtaRef}
                   href={arcadeProject.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn--arcade-primary"
+                  className="btn btn--arcade-primary magnetic-target"
                 >
                   <span>사이트 열기</span>
                   <span aria-hidden="true">↗</span>
                 </a>
                 <button
                   type="button"
-                  className="btn btn--ghost-light"
+                  className="editorial-text-link editorial-text-link--light"
                   onClick={() => onNavigate(`/works/${arcadeProject.slug}`)}
                 >
-                  <span>자세히 보기</span>
+                  <span>전시 자세히 보기</span>
                   <span aria-hidden="true">→</span>
                 </button>
               </div>
@@ -350,7 +412,7 @@ export function HomePage({
           </div>
         </section>
 
-        {/* CHAPTER 3 — EXHIBITION 02: Asterism Write (Bright Daylight Studio, Right Editorial) */}
+        {/* MOVEMENT 04 — ASTERISM WRITE (Warm Alabaster Daylight Print Atelier, Borderless Editorial) */}
         <section
           ref={asterismSecRef}
           id="work-asterism-write"
@@ -358,31 +420,30 @@ export function HomePage({
           aria-labelledby="asterism-heading"
         >
           <div className="container chapter-exhibition__grid chapter-exhibition__grid--right">
-            <div className="exhibition-sheet exhibition-sheet--light">
-              <div className="exhibition-sheet__eyebrow mono">
-                <span>02 / 02</span>
-                <span>·</span>
-                <span>{asterismProject.creator}</span>
-                <span>·</span>
-                <span>1.0.0-rc.1 개발 중</span>
+            <div className="editorial-stage editorial-stage--asterism">
+              <div className="editorial-stage__top mono">
+                <span className="editorial-stage__num">02</span>
+                <span className="editorial-stage__rule" aria-hidden="true" />
+                <span>{asterismProject.creator} · 1.0.0-rc.1</span>
               </div>
 
-              <div className="asterism-wordmark-lockup">
+              {/* Unmodified official Asterism Write wordmark resting directly on luminous gallery ground */}
+              <div className="asterism-atelier-wordmark">
                 <h2 id="asterism-heading" className="sr-only">
                   {asterismProject.title}
                 </h2>
                 <img
                   src={asterismProject.artwork.wordmarkSrc}
                   alt={asterismProject.artwork.wordmarkAlt}
-                  width={260}
-                  height={86}
+                  width={290}
+                  height={96}
                 />
               </div>
 
-              <p className="exhibition-sheet__lead">
+              <p className="editorial-stage__lead editorial-stage__lead--dark">
                 문서 작성과 PDF 작업을 위한 편집기.
               </p>
-              <p className="exhibition-sheet__body">
+              <p className="editorial-stage__body editorial-stage__body--dark">
                 보고서와 표, 수식을 편집하고 PDF에 펜·형광펜으로 필기할 수
                 있습니다. 웹에서 로그인 없이 바로 열 수 있고, 데스크톱 버전은
                 준비 중입니다.
@@ -397,9 +458,9 @@ export function HomePage({
                 </figure>
               )}
 
-              {/* Tactile screen tabs swap the real 3D aluminum display & fan curved paper */}
+              {/* Tactile Proof-Sheet Tabs swapping 3D Aluminum Proof Plate & fanning 5 curved cotton folios */}
               <div
-                className="studio-tabs studio-tabs--asterism"
+                className="signal-tabs signal-tabs--asterism"
                 role="tablist"
                 aria-label="Asterism Write 화면 선택"
               >
@@ -409,31 +470,33 @@ export function HomePage({
                     type="button"
                     role="tab"
                     aria-selected={asterismShot === idx}
-                    className={`studio-tab ${asterismShot === idx ? 'is-active' : ''}`}
+                    className={`signal-tab ${asterismShot === idx ? 'is-active' : ''}`}
                     onClick={() => handleSelectAsterismShot(idx)}
                   >
-                    {shot.label}
+                    <span className="mono signal-tab__idx">0{idx + 1}</span>
+                    <span>{shot.label}</span>
                   </button>
                 ))}
               </div>
 
               {asterismProject.formatIcons && (
-                <div className="asterism-format-row" aria-label="지원 문서 형식">
+                <div className="atelier-format-rail" aria-label="지원 문서 형식">
                   {asterismProject.formatIcons.map((fmt) => (
-                    <div key={fmt.code} className="asterism-format-badge">
-                      <img src={fmt.src} alt="" width={24} height={24} loading="lazy" />
+                    <div key={fmt.code} className="atelier-format-item">
+                      <img src={fmt.src} alt="" width={22} height={22} loading="lazy" />
                       <span className="mono">{fmt.code}</span>
                     </div>
                   ))}
                 </div>
               )}
 
-              <div className="exhibition-sheet__actions">
+              <div className="editorial-stage__actions">
                 <a
+                  ref={asterismCtaRef}
                   href={asterismProject.externalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn--asterism-primary"
+                  className="btn btn--asterism-primary magnetic-target"
                 >
                   <span>공식 사이트</span>
                   <span aria-hidden="true">↗</span>
@@ -449,10 +512,11 @@ export function HomePage({
                 </a>
                 <button
                   type="button"
-                  className="btn btn--asterism-detail"
+                  className="editorial-text-link editorial-text-link--dark"
                   onClick={() => onNavigate(`/works/${asterismProject.slug}`)}
                 >
-                  <span>자세히 →</span>
+                  <span>전시 자세히 보기</span>
+                  <span aria-hidden="true">→</span>
                 </button>
               </div>
             </div>
@@ -460,20 +524,19 @@ export function HomePage({
         </section>
       </div>
 
-      {/* CHAPTER 4 — Solid Porcelain Archive Strip */}
-      <div className="monograph-archive-surface">
-        <SignalHorizon tone="light" accent="#405CC8" label="2026 · INDEX" />
+      {/* MOVEMENT 05 — SOLID WARM PORCELAIN ARCHIVE MONOGRAPH */}
+      <div ref={archiveWrapRef} className="monograph-archive-surface">
         <section id="works" className="home-archive" aria-labelledby="home-archive-heading">
           <div className="container">
             <div className="home-archive__head">
               <div>
-                <span className="eyebrow mono">PROJECTS · 2026</span>
-                <h2 id="home-archive-heading" className="section-title">
-                  우리가 만든 것들.
+                <span className="signal-eyebrow mono">ARCHIVE · 2026</span>
+                <h2 id="home-archive-heading" className="archive-display-title">
+                  프로젝트 기록
                 </h2>
               </div>
               <p className="home-archive__sub">
-                양일고등학교 코딩동아리 소나 부원들이 만든 게임과 소프트웨어 목록입니다.
+                부원들이 완성한 게임과 프로그램을 연도별로 이어서 남깁니다.
               </p>
             </div>
 

@@ -39,40 +39,55 @@
 }
 
 :root {
-  /* Core SONA Living Signal Palette */
-  --basalt: #11141a;
-  --basalt-elevated: #191e27;
-  --basalt-soft: #232a36;
-  --porcelain: #f0eee8;
-  --porcelain-paper: #f7f5f0;
-  --porcelain-deep: #e4e0d7;
+  /* Core SONA Material Signal 2.0 Surface & Pigment Palette */
+  --basalt: #090c11;
+  --basalt-elevated: #121722;
+  --basalt-soft: #1d2433;
+
+  --porcelain: #f2efe8;
+  --porcelain-paper: #f8f6f0;
+  --porcelain-deep: #e6e2d7;
+
+  /* Chromatic Signal Accents */
   --iris: #5b75ff;
-  --iris-deep: #3d56df;
+  --iris-deep: #3751cc;
   --vermilion: #f4654d;
   --acid-lime: #d9f56c;
 
-  /* Semantic Ink & Borders */
+  /* Exhibition Atmospheres */
+  --arcade-ground: #140e30;
+  --arcade-yellow: #ffd23f;
+  --arcade-mint: #5ef2c8;
+  --arcade-pink: #ff77b3;
+
+  --asterism-ground: #f5f3ec;
+  --asterism-cobalt: #405cc8;
+
+  /* Semantic Ink & Architectural Hairlines */
   --ink-dark: #11141a;
-  --ink-dark-muted: #4b5362;
-  --ink-light: #f0eee8;
-  --ink-light-muted: rgba(240, 238, 232, 0.72);
+  --ink-dark-muted: #505868;
+  --ink-light: #f2efe8;
+  --ink-light-muted: rgba(242, 239, 232, 0.7);
   --line-dark: rgba(17, 20, 26, 0.14);
-  --line-light: rgba(240, 238, 232, 0.16);
+  --line-dark-strong: rgba(17, 20, 26, 0.34);
+  --line-light: rgba(242, 239, 232, 0.16);
+  --line-light-strong: rgba(242, 239, 232, 0.36);
 
   /* Typography */
   --font-sans: 'IBM Plex Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Layout & Spacing */
-  --container-max: 1420px;
-  --gutter: clamp(18px, 4vw, 52px);
-  --header-h: 68px;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
+  /* Layout & Architectural Grid */
+  --container-max: 1460px;
+  --gutter: clamp(18px, 3.8vw, 56px);
+  --header-h: 66px;
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
   --radius-pill: 999px;
 
-  /* Motion */
+  /* Unified Motion Curves */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-tactile: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-shutter: cubic-bezier(0.76, 0, 0.24, 1);
 }

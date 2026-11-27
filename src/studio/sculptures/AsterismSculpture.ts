@@ -4,27 +4,27 @@ import type { MaterialLibrary } from '../MaterialLibrary';
 import { PointerDynamics, SpringValue } from '../SpringPhysics';
 
 /**
- * Generates an organic curved heavyweight paper sheet with subtle S-wave drape
- * and gently lifted corner (replaces flat white boxes with believable paper curvature).
+ * Generates an organically curved heavyweight archival cotton-paper folio
+ * with natural spine curvature and delicately lifted corner.
  */
 function createCurvedPaperGeometry(
   width: number,
   height: number,
   curlAmount: number,
+  phase = 0,
 ): THREE.BufferGeometry {
   const geo = new THREE.PlaneGeometry(width, height, 28, 36);
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
     const y = pos.getY(i);
-    const nx = x / (width * 0.5); // -1..1
-    const ny = y / (height * 0.5); // -1..1
+    const nx = x / (width * 0.5);
+    const ny = y / (height * 0.5);
 
-    // Gentle organic paper wave + lifted top-right corner
-    const spineBend = Math.sin(nx * 1.45) * 0.045 * curlAmount;
+    const spineBend = Math.sin(nx * 1.55 + phase) * 0.052 * curlAmount;
     const cornerLift =
-      Math.max(0, nx + 0.3) * Math.max(0, -ny + 0.2) * 0.14 * curlAmount;
-    const drape = -Math.pow(ny, 2) * 0.032 * curlAmount;
+      Math.max(0, nx + 0.25) * Math.max(0, -ny + 0.25) * 0.16 * curlAmount;
+    const drape = -Math.pow(ny, 2) * 0.036 * curlAmount;
     pos.setZ(i, spineBend + cornerLift + drape);
   }
   geo.computeVertexNormals();
@@ -32,21 +32,53 @@ function createCurvedPaperGeometry(
 }
 
 /**
- * Architectural Daylight Studio Composition for 〈Asterism Write〉.
- * Pairs a brushed-aluminum precision studio display (showing unaltered official editor/PDF UI)
- * with 3 organically curved cotton-paper folios that fan open with spring physics
- * and a refractive optical-glass paperweight prism.
+ * Creates a faceted optical-glass triangular drafting prism bar
+ * (replaces generic gray rectangle with unmistakable architectural crystal geometry).
+ */
+function createFacetedPrismGeometry(length: number, radius: number): THREE.BufferGeometry {
+  const tri = new THREE.Shape();
+  tri.moveTo(-radius, -radius * 0.58);
+  tri.lineTo(radius, -radius * 0.58);
+  tri.lineTo(0, radius * 1.05);
+  tri.closePath();
+
+  const geo = new THREE.ExtrudeGeometry(tri, {
+    depth: length,
+    bevelEnabled: true,
+    bevelSegments: 4,
+    steps: 1,
+    bevelSize: 0.022,
+    bevelThickness: 0.022,
+  });
+  geo.center();
+  geo.rotateY(Math.PI / 2);
+  return geo;
+}
+
+/**
+ * High-Key Architectural Daylight Print Atelier for 〈Asterism Write〉 (V2.0).
+ * Replaces the generic desktop monitor mockup with an art-directed physical drafting sculpture:
+ * - Floating ultra-thin machined brushed-aluminum gallery proof plate (no monitor stand!)
+ * - 5 sweeping S-curved cotton-paper editorial folios with real procedural print typography
+ * - Warm matte stone drafting block, calibrated aluminum scale ruler & faceted crystal prism
  */
 export class AsterismSculpture {
   public readonly group = new THREE.Group();
   public readonly hitMesh: THREE.Mesh;
 
   private readonly rig = new THREE.Group();
+  private readonly proofPlate = new THREE.Group();
   private readonly screenMat: THREE.MeshBasicMaterial;
   private readonly textures = new Map<string, THREE.Texture>();
   private readonly textureLoader: THREE.TextureLoader;
 
-  private readonly folios: { group: THREE.Group; baseAngle: number; baseZ: number; spring: SpringValue }[] = [];
+  private readonly folios: {
+    group: THREE.Group;
+    baseRotY: number;
+    baseRotZ: number;
+    baseZ: number;
+    spring: SpringValue;
+  }[] = [];
   private readonly prismMesh: THREE.Mesh;
   private readonly shadowPlane: THREE.Mesh;
 
@@ -55,137 +87,181 @@ export class AsterismSculpture {
     this.group.name = 'AsterismSculpture';
     this.group.add(this.rig);
 
-    // 1. Machined Brushed-Aluminum Architectural Display Frame
-    const frameGroup = new THREE.Group();
-    frameGroup.position.set(0.28, 0.24, -0.18);
-    this.rig.add(frameGroup);
+    // 1. Floating Ultra-Thin Brushed-Aluminum Architectural Proof Plate (zero computer stand!)
+    this.proofPlate.position.set(0.32, 0.22, 0.05);
+    this.proofPlate.rotation.set(-0.04, 0.06, 0.0);
+    this.rig.add(this.proofPlate);
 
     const chassis = new THREE.Mesh(
-      new RoundedBoxGeometry(2.86, 1.94, 0.075, 4, 0.025),
+      new RoundedBoxGeometry(2.96, 2.02, 0.052, 4, 0.018),
       materials.brushedAluminum,
     );
     chassis.castShadow = true;
     chassis.receiveShadow = true;
-    frameGroup.add(chassis);
+    this.proofPlate.add(chassis);
 
-    const innerBezel = new THREE.Mesh(
-      new RoundedBoxGeometry(2.74, 1.82, 0.082, 3, 0.012),
+    // Razor-thin anodized hairline inner frame
+    const bezel = new THREE.Mesh(
+      new RoundedBoxGeometry(2.86, 1.92, 0.058, 3, 0.01),
       materials.anodizedBasalt,
     );
-    frameGroup.add(innerBezel);
+    this.proofPlate.add(bezel);
 
-    // Unaltered real Asterism Write UI capture (toneMapped: false preserves crisp white fidelity)
+    // Unaltered official Asterism Write UI capture (toneMapped: false preserves pure editorial crispness)
     const editorTex = this.loadTexture('/assets/projects/asterism-write/editor.webp');
     this.screenMat = new THREE.MeshBasicMaterial({ map: editorTex, toneMapped: false });
-    const displayPlane = new THREE.Mesh(new THREE.PlaneGeometry(2.68, 1.76), this.screenMat);
-    displayPlane.position.z = 0.044;
-    frameGroup.add(displayPlane);
+    const displayPlane = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 1.86), this.screenMat);
+    displayPlane.position.z = 0.032;
+    this.proofPlate.add(displayPlane);
 
-    // Minimalist L-profile anodized aluminum easel stand
-    const standNeck = new THREE.Mesh(
-      new RoundedBoxGeometry(0.46, 0.62, 0.055, 3, 0.015),
-      materials.brushedAluminum,
-    );
-    standNeck.position.set(0, -1.12, -0.14);
-    standNeck.rotation.x = 0.16;
-    standNeck.castShadow = true;
+    // 4 subtle machined brass/aluminum gallery registration pins on the outer chamfer
+    const pinGeo = new THREE.CylinderGeometry(0.018, 0.018, 0.064, 14);
+    pinGeo.rotateX(Math.PI / 2);
+    const pinCoords: [number, number][] = [
+      [-1.44, 0.96],
+      [1.44, 0.96],
+      [-1.44, -0.96],
+      [1.44, -0.96],
+    ];
+    for (const [px, py] of pinCoords) {
+      const pin = new THREE.Mesh(pinGeo, materials.machinedChrome);
+      pin.position.set(px, py, 0.002);
+      this.proofPlate.add(pin);
+    }
 
-    const standFoot = new THREE.Mesh(
-      new RoundedBoxGeometry(1.18, 0.042, 0.66, 3, 0.015),
-      materials.brushedAluminum,
-    );
-    standFoot.position.set(0, -1.36, -0.02);
-    standFoot.castShadow = true;
-    standFoot.receiveShadow = true;
-    frameGroup.add(standNeck, standFoot);
-
-    // 2. Three Organically Curved Archival Cotton Paper Folios (Left Foreground)
+    // 2. Five Cascading S-Curved Archival Cotton Folios (fanning diagonally left & behind plate)
     const paperStack = new THREE.Group();
-    paperStack.position.set(-1.26, -0.22, 0.42);
+    paperStack.position.set(-1.12, -0.14, 0.36);
     this.rig.add(paperStack);
 
-    const cobaltLineMat = new THREE.MeshBasicMaterial({ color: 0x405cc8 });
-    const inkLineMat = new THREE.MeshBasicMaterial({ color: 0x8b95a8 });
+    const folioConfigs: {
+      mat: THREE.Material;
+      pos: [number, number, number];
+      rot: [number, number, number];
+      size: [number, number];
+      curl: number;
+    }[] = [
+      {
+        mat: materials.archivalPaperGrid,
+        pos: [-0.26, 0.14, -0.44],
+        rot: [-0.06, 0.16, 0.11],
+        size: [1.22, 1.66],
+        curl: 0.72,
+      },
+      {
+        mat: materials.archivalPaper,
+        pos: [-0.14, 0.06, -0.22],
+        rot: [-0.07, 0.22, 0.06],
+        size: [1.22, 1.66],
+        curl: 0.88,
+      },
+      {
+        mat: materials.archivalPaperFormula,
+        pos: [0.0, -0.02, 0.0],
+        rot: [-0.08, 0.28, 0.01],
+        size: [1.2, 1.62],
+        curl: 1.05,
+      },
+      {
+        mat: materials.archivalPaperManuscript,
+        pos: [0.14, -0.08, 0.22],
+        rot: [-0.09, 0.36, -0.04],
+        size: [1.18, 1.58],
+        curl: 1.22,
+      },
+      {
+        mat: materials.archivalPaper,
+        pos: [2.56, 0.28, -0.82],
+        rot: [-0.04, -0.18, -0.14],
+        size: [1.06, 1.48],
+        curl: 0.9,
+      },
+    ];
 
-    for (let i = 0; i < 3; i++) {
+    folioConfigs.forEach((cfg, i) => {
       const fGroup = new THREE.Group();
-      const baseAngle = 0.24 + (i - 1) * 0.1;
-      const baseZ = (i - 1) * 0.11;
-      fGroup.position.set(i * 0.06, -i * 0.04, baseZ);
-      fGroup.rotation.set(-0.08, baseAngle, 0.02 * (i - 1));
+      fGroup.position.set(...cfg.pos);
+      fGroup.rotation.set(...cfg.rot);
 
-      const sheetGeo = createCurvedPaperGeometry(1.16, 1.58, 0.85 + i * 0.25);
-      const sheet = new THREE.Mesh(sheetGeo, materials.archivalPaper);
+      const sheetGeo = createCurvedPaperGeometry(cfg.size[0], cfg.size[1], cfg.curl, i * 0.4);
+      const sheet = new THREE.Mesh(sheetGeo, cfg.mat);
       sheet.castShadow = true;
       sheet.receiveShadow = true;
       fGroup.add(sheet);
 
-      // Subtle ruled typography header + line bars on frontmost curved sheet
-      if (i === 2) {
-        const heading = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.045), cobaltLineMat);
-        heading.position.set(-0.18, 0.48, 0.025);
-        fGroup.add(heading);
-        for (let ln = 0; ln < 5; ln++) {
-          const w = ln === 4 ? 0.48 : 0.78;
-          const line = new THREE.Mesh(new THREE.PlaneGeometry(w, 0.014), inkLineMat);
-          line.position.set(-0.46 + w * 0.5, 0.3 - ln * 0.12, 0.02);
-          fGroup.add(line);
-        }
-      }
-
       paperStack.add(fGroup);
       this.folios.push({
         group: fGroup,
-        baseAngle,
-        baseZ,
-        spring: new SpringValue(0, { stiffness: 95, damping: 14, mass: 0.8 + i * 0.2 }),
+        baseRotY: cfg.rot[1],
+        baseRotZ: cfg.rot[2],
+        baseZ: cfg.pos[2],
+        spring: new SpringValue(0, { stiffness: 102, damping: 14, mass: 0.76 + i * 0.14 }),
       });
-    }
+    });
 
-    // 3. Refractive Optical Crown-Glass Paperweight Bar & Calibrated Silver Scale
+    // 3. Architectural Matte Stone Pedestal Slab + Calibrated Aluminum Drafting Scale + Faceted Crystal Prism
+    const stonePlinth = new THREE.Mesh(
+      new RoundedBoxGeometry(2.65, 0.16, 0.86, 4, 0.02),
+      materials.matteStudioStone,
+    );
+    stonePlinth.position.set(0.28, -1.16, 0.42);
+    stonePlinth.receiveShadow = true;
+    stonePlinth.castShadow = true;
+    this.rig.add(stonePlinth);
+
+    // Calibrated brushed-aluminum drafting ruler with incised index strip
     const scaleBar = new THREE.Mesh(
-      new RoundedBoxGeometry(2.3, 0.042, 0.16, 3, 0.012),
+      new RoundedBoxGeometry(2.42, 0.042, 0.17, 3, 0.01),
       materials.brushedAluminum,
     );
-    scaleBar.position.set(0.32, -1.08, 0.68);
+    scaleBar.position.set(0.24, -1.06, 0.66);
     scaleBar.castShadow = true;
     scaleBar.receiveShadow = true;
     this.rig.add(scaleBar);
 
-    // Optical crown-glass prism bar refracting daylight & cobalt highlights
-    this.prismMesh = new THREE.Mesh(
-      new RoundedBoxGeometry(0.92, 0.24, 0.26, 4, 0.045),
-      materials.opticalGlass,
+    // Precision Cobalt anodized calibration index bar embedded along the drafting scale
+    const cobaltBar = new THREE.Mesh(
+      new RoundedBoxGeometry(0.68, 0.014, 0.03, 2, 0.005),
+      materials.anodizedIris,
     );
-    this.prismMesh.position.set(0.86, -0.94, 0.72);
-    this.prismMesh.rotation.y = -0.22;
+    cobaltBar.position.set(-0.56, -1.036, 0.66);
+    this.rig.add(cobaltBar);
+
+    // Sculpted Faceted Triangular Optical-Glass Paperweight Prism refracting daylight + cobalt!
+    this.prismMesh = new THREE.Mesh(
+      createFacetedPrismGeometry(1.06, 0.23),
+      materials.crystalPrismGlass,
+    );
+    this.prismMesh.position.set(0.76, -0.92, 0.56);
+    this.prismMesh.rotation.set(0.0, -0.26, 0.0);
     this.prismMesh.castShadow = true;
     this.rig.add(this.prismMesh);
 
-    // Subtle anodized cobalt marker bead inside the drafting setup
+    // Subtle cobalt magnetic disc inside the stone tray
     const cobaltMarker = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.055, 0.055, 0.05, 24),
+      new THREE.CylinderGeometry(0.068, 0.068, 0.042, 28),
       materials.anodizedIris,
     );
-    cobaltMarker.position.set(-0.62, -1.04, 0.68);
+    cobaltMarker.position.set(-0.74, -1.06, 0.36);
+    cobaltMarker.castShadow = true;
     this.rig.add(cobaltMarker);
 
-    // Soft daylight contact shadow plane
+    // Warm gallery studio soft contact shadow
     this.shadowPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(5.2, 3.6),
+      new THREE.PlaneGeometry(5.6, 3.8),
       new THREE.MeshBasicMaterial({
         map: materials.contactShadowTex,
         transparent: true,
-        opacity: 0.24,
+        opacity: 0.22,
         depthWrite: false,
       }),
     );
     this.shadowPlane.rotation.x = -Math.PI / 2;
-    this.shadowPlane.position.y = -1.38;
+    this.shadowPlane.position.y = -1.26;
     this.group.add(this.shadowPlane);
 
     this.hitMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(3.8, 2.8, 1.8),
+      new THREE.BoxGeometry(4.2, 2.9, 1.8),
       new THREE.MeshBasicMaterial({ visible: false }),
     );
     this.hitMesh.userData = { sculpture: 'asterism' };
@@ -211,7 +287,8 @@ export class AsterismSculpture {
 
   public triggerPageFan(): void {
     this.folios.forEach((f, idx) => {
-      f.spring.impulse((idx - 1) * 1.65 + 0.5);
+      const dir = idx === 4 ? -1.4 : (idx - 1.5) * 1.35 + 0.45;
+      f.spring.impulse(dir);
     });
   }
 
@@ -222,37 +299,42 @@ export class AsterismSculpture {
     presence: number,
     offsetX: number,
     offsetY: number,
+    baseScale: number,
     reducedMotion: boolean,
   ): void {
     this.group.visible = presence > 0.04;
     if (!this.group.visible) return;
 
     const inv = 1 - presence;
-    this.group.position.set(offsetX, offsetY - inv * 2.2, -inv * 2.0);
-    this.group.scale.setScalar(0.8 + presence * 0.2);
+    this.group.position.set(offsetX, offsetY - inv * 2.2, -inv * 1.9);
+    this.group.scale.setScalar(baseScale * (0.82 + presence * 0.18));
 
-    // Clean editorial three-quarter angle facing the right-hand copy column
-    const baseYRot = offsetX < 0 ? 0.26 : 0.12;
+    const baseYRot = offsetX < 0 ? 0.22 : 0.08;
     this.rig.rotation.set(
       0.06 + pointer.heavyY.value * 0.11,
-      baseYRot + pointer.heavyX.value * 0.22 - inv * 0.35,
+      baseYRot + pointer.heavyX.value * 0.22 - inv * 0.34,
       -pointer.heavyX.value * 0.025,
     );
 
-    // Curved paper folios gently fan open with pointer movement & spring damping
+    // Proof plate floats gently with crisp architectural stillness
+    this.proofPlate.position.y = 0.22 + (reducedMotion ? 0 : Math.sin(elapsed * 0.95) * 0.032);
+
+    // Curved paper folios fan gracefully with spring physics
     this.folios.forEach((folio, idx) => {
+      const sign = idx === 4 ? -1 : 1;
       const targetFan =
-        (idx - 1) * (0.08 + pointer.energy.value * 0.14) +
-        pointer.midX.value * 0.08 * (idx + 1) * 0.4;
+        sign * ((idx - 1.5) * (0.065 + pointer.energy.value * 0.14) + pointer.midX.value * 0.06);
       folio.spring.setTarget(targetFan);
       const val = reducedMotion ? 0 : folio.spring.step(dt);
-      const breathe = reducedMotion ? 0 : Math.sin(elapsed * 1.05 + idx * 0.8) * 0.02;
+      const breathe = reducedMotion ? 0 : Math.sin(elapsed * 1.0 + idx * 0.72) * 0.022;
 
-      folio.group.rotation.y = folio.baseAngle + val + breathe;
-      folio.group.position.z = folio.baseZ + val * 0.22;
+      folio.group.rotation.y = folio.baseRotY + val + breathe;
+      folio.group.rotation.z = folio.baseRotZ + val * 0.16;
+      folio.group.position.z = folio.baseZ + val * 0.18;
     });
 
-    this.prismMesh.rotation.y = -0.22 + pointer.lightX.value * 0.14;
-    (this.shadowPlane.material as THREE.MeshBasicMaterial).opacity = 0.24 * presence;
+    this.prismMesh.rotation.y = -0.26 + pointer.lightX.value * 0.22;
+    this.prismMesh.rotation.z = pointer.lightY.value * 0.06;
+    (this.shadowPlane.material as THREE.MeshBasicMaterial).opacity = 0.22 * presence;
   }
 }
