@@ -90,13 +90,13 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             </div>
 
             <div className="about-cta-box">
-              <p>3D 공간에서 두 작품을 둘러볼 수 있습니다.</p>
+              <p>두 작품을 메인 화면에서 바로 볼 수 있습니다.</p>
               <button
                 type="button"
                 className="btn btn--dark"
                 onClick={() => onNavigate('/')}
               >
-                <span>공간으로 돌아가기</span>
+                <span>홈으로 돌아가기</span>
                 <span aria-hidden="true">→</span>
               </button>
             </div>

@@ -57,7 +57,6 @@ export interface ProjectTheme {
 export interface ProjectEntry {
   id: string;
   slug: string;
-  zoneId: 'arcade' | 'asterism';
   indexLabel: string;
   title: string;
   shortTitle: string;
@@ -98,7 +97,6 @@ export const PROJECTS: ProjectEntry[] = [
   {
     id: 'seojun-arcade',
     slug: 'seojun-arcade',
-    zoneId: 'arcade',
     indexLabel: '01',
     title: '서준이네 오락실',
     shortTitle: '오락실',
@@ -227,7 +225,6 @@ export const PROJECTS: ProjectEntry[] = [
   {
     id: 'asterism-write',
     slug: 'asterism-write',
-    zoneId: 'asterism',
     indexLabel: '02',
     title: 'Asterism Write',
     shortTitle: 'Asterism',
@@ -387,10 +384,6 @@ export const PROJECTS: ProjectEntry[] = [
 
 export function getProjectBySlug(slug: string): ProjectEntry | undefined {
   return PROJECTS.find((p) => p.slug === slug || p.id === slug);
-}
-
-export function getProjectByZoneId(zoneId: 'arcade' | 'asterism'): ProjectEntry | undefined {
-  return PROJECTS.find((p) => p.zoneId === zoneId);
 }
 
 export function getArchiveYears(): number[] {

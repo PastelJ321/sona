@@ -281,10 +281,14 @@ a {
 
 .site-header--light {
   color: var(--basalt);
-  background: rgba(240, 238, 232, 0.95);
+  background: rgba(246, 245, 240, 0.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom-color: var(--line-dark);
+}
+
+.site-header--light .site-nav__link {
+  color: var(--basalt);
 }
 
 .site-header__inner {

@@ -1,0 +1,605 @@
+/* =========================================================
+   SONA — MATERIAL SIGNAL: CINEMATIC EDITORIAL & 3D STUDIO
+   ========================================================= */
+.home-monograph {
+  position: relative;
+}
+
+.studio-chapters {
+  position: relative;
+  z-index: 2;
+  background: #0b0e14;
+}
+
+.studio-canvas-pin {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.studio-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Shared Chapter Structure */
+.chapter {
+  position: relative;
+  z-index: 3;
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
+}
+
+/* ---------------------------------------------------------
+   CHAPTER 1: HERO — Asymmetric Monumental Typography × Sculpture
+   --------------------------------------------------------- */
+.chapter--hero {
+  color: var(--porcelain);
+}
+
+.chapter-hero__layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(20px, 3vh, 36px));
+  padding-bottom: clamp(28px, 4.5vh, 52px);
+}
+
+.chapter-hero__top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 11.5px;
+  color: rgba(240, 238, 232, 0.62);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(240, 238, 232, 0.11);
+}
+
+.chapter-hero__bottom {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: end;
+}
+
+.hero-display {
+  margin: 0;
+  font-size: clamp(4.2rem, 12.2vw, 10.6rem);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+  color: var(--porcelain);
+}
+
+.chapter-hero__editorial-col {
+  justify-self: end;
+  max-width: 410px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-statement {
+  margin: 0;
+  font-size: clamp(1.08rem, 1.55vw, 1.38rem);
+  font-weight: 500;
+  line-height: 1.52;
+  letter-spacing: -0.025em;
+  color: rgba(240, 238, 232, 0.92);
+}
+
+.hero-quick-links {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(240, 238, 232, 0.2);
+}
+
+.hero-index-link {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 4px;
+  border: 0;
+  border-bottom: 1px solid rgba(240, 238, 232, 0.2);
+  background: transparent;
+  color: var(--porcelain);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  transition:
+    color 0.2s ease,
+    padding-left 0.25s var(--ease-out-expo),
+    border-color 0.2s ease;
+}
+
+.hero-index-link span:first-child {
+  font-size: 11px;
+  color: var(--acid-lime);
+}
+
+.hero-index-link:hover {
+  color: var(--acid-lime);
+  padding-left: 8px;
+  border-bottom-color: rgba(217, 245, 108, 0.52);
+}
+
+/* ---------------------------------------------------------
+   CHAPTERS 2 & 3: EXHIBITIONS — Asymmetric Editorial × 3D Stage
+   --------------------------------------------------------- */
+.chapter--exhibition {
+  padding: calc(var(--header-h) + 32px) 0 clamp(44px, 7vh, 84px);
+  align-items: center;
+  scroll-margin-top: 0;
+}
+
+.chapter--arcade {
+  color: #fff8ec;
+}
+
+.chapter--asterism {
+  color: #11141a;
+}
+
+.chapter-exhibition__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+
+.chapter-exhibition__grid--left .exhibition-sheet {
+  grid-column: 1 / 2;
+  max-width: 490px;
+}
+
+.chapter-exhibition__grid--right .exhibition-sheet {
+  grid-column: 2 / 3;
+  justify-self: end;
+  max-width: 490px;
+}
+
+.exhibition-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(24px, 2.8vw, 34px);
+  border-radius: 22px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.exhibition-sheet--dark {
+  background: rgba(19, 14, 46, 0.72);
+  border: 1px solid rgba(201, 192, 255, 0.2);
+  box-shadow: 0 28px 80px rgba(6, 4, 18, 0.42);
+}
+
+.exhibition-sheet--light {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(17, 20, 26, 0.11);
+  box-shadow: 0 24px 70px rgba(24, 34, 62, 0.08);
+}
+
+.exhibition-sheet__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11.5px;
+  opacity: 0.72;
+}
+
+.exhibition-sheet__title {
+  margin: 0;
+  font-size: clamp(2rem, 3.4vw, 3.15rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.asterism-wordmark-lockup {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(17, 20, 26, 0.08);
+}
+
+.asterism-wordmark-lockup img {
+  width: clamp(190px, 20vw, 250px);
+  height: auto;
+}
+
+.exhibition-sheet__lead {
+  margin: 0;
+  font-size: clamp(1.06rem, 1.4vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.42;
+  letter-spacing: -0.02em;
+}
+
+.exhibition-sheet__body {
+  margin: 0;
+  font-size: 14.8px;
+  line-height: 1.72;
+  opacity: 0.82;
+}
+
+.exhibition-fallback-shot {
+  margin: 4px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(127, 138, 168, 0.25);
+}
+
+/* Tactile Screen Switcher */
+.studio-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.studio-tab {
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(127, 138, 168, 0.3);
+  background: rgba(127, 138, 168, 0.09);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.studio-tabs--arcade .studio-tab.is-active {
+  background: #ffd23f;
+  color: #171238;
+  border-color: #ffd23f;
+  font-weight: 700;
+}
+
+.studio-tabs--asterism .studio-tab.is-active {
+  background: #405cc8;
+  color: #ffffff;
+  border-color: #405cc8;
+  font-weight: 600;
+}
+
+/* Arcade Sub-games & Asterism Official Format Row */
+.exhibition-sublinks {
+  display: grid;
+  gap: 7px;
+}
+
+.exhibition-sublink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 192, 255, 0.18);
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.exhibition-sublink span:last-child {
+  font-size: 11.5px;
+  color: #5ef2c8;
+  font-weight: 500;
+}
+
+.exhibition-sublink:hover {
+  border-color: #5ef2c8;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.asterism-format-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.asterism-format-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(17, 20, 26, 0.09);
+  font-size: 11px;
+  font-weight: 600;
+  color: #171c28;
+}
+
+.exhibition-sheet__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding-top: 4px;
+}
+
+.btn--arcade-primary {
+  background: #ffd23f;
+  color: #171238;
+  border-color: #ffd23f;
+}
+
+.btn--arcade-primary:hover {
+  background: #ffe06e;
+}
+
+.btn--asterism-primary {
+  background: #405cc8;
+  color: #ffffff;
+  border-color: #405cc8;
+}
+
+.btn--asterism-primary:hover {
+  background: #334eb4;
+}
+
+.btn--asterism-detail {
+  background: rgba(17, 20, 26, 0.07);
+  color: #11141a;
+}
+
+.btn--asterism-detail:hover {
+  background: rgba(17, 20, 26, 0.14);
+}
+
+/* Solid Archive Surface cleanly rises over the fixed studio canvas */
+.monograph-archive-surface {
+  position: relative;
+  z-index: 6;
+  background: var(--porcelain);
+}
+
+/* Subtle fallback background gradient if WebGL is unavailable */
+.studio-chapters.is-fallback .chapter--hero {
+  background: radial-gradient(circle at 75% 40%, #1c2440, #0b0e14 68%);
+}
+
+.studio-chapters.is-fallback .chapter--arcade {
+  background: linear-gradient(155deg, #161036, #241a56);
+}
+
+.studio-chapters.is-fallback .chapter--asterism {
+  background: linear-gradient(180deg, #f5f6fa, #e9edf5);
+}
+
+/* Project Detail & About shared helper styles */
+.exhibition__wordmark-plate {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(23, 28, 40, 0.08);
+  box-shadow: 0 8px 24px rgba(23, 28, 40, 0.06);
+}
+
+.exhibition__wordmark-plate--lg {
+  padding: 14px 22px;
+}
+
+.exhibition__wordmark-img {
+  width: clamp(200px, 24vw, 310px);
+  height: auto;
+}
+
+.exhibition__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--ex-badge-bg);
+  color: var(--ex-badge-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.exhibition__btn-primary {
+  background: var(--ex-accent);
+  color: var(--ex-accent-ink);
+  border-color: var(--ex-accent);
+}
+
+.exhibition__btn-secondary {
+  background: transparent;
+  color: var(--ex-ink);
+  border-color: var(--ex-border);
+}
+
+.format-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.format-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--porcelain-paper);
+  border: 1px solid var(--line-dark);
+}
+
+.format-chip img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.format-chip strong {
+  display: block;
+  font-size: 12px;
+}
+
+.format-chip span {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-dark-muted);
+}
+
+.about-works-list {
+  display: grid;
+  gap: 16px;
+}
+
+.about-work-item {
+  padding: 22px 24px;
+  border-radius: var(--radius-md);
+  background: var(--porcelain-paper);
+  border: 1px solid var(--line-dark);
+}
+
+.about-work-item__meta {
+  display: flex;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--ink-dark-muted);
+  margin-bottom: 8px;
+}
+
+.about-work-item h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.about-work-item p {
+  margin: 0 0 16px;
+  font-size: 14.5px;
+  color: var(--ink-dark-muted);
+  line-height: 1.68;
+}
+
+.about-work-item__links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------
+   TABLET PORTRAIT (768px - 1023px): Upper 3D Stage + Lower Sheet
+   --------------------------------------------------------- */
+@media (max-width: 1023px) {
+  .chapter-hero__bottom {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .chapter-hero__editorial-col {
+    justify-self: start;
+    max-width: 520px;
+  }
+
+  .chapter--exhibition {
+    align-items: flex-end;
+    padding-top: 46vh;
+    padding-bottom: 36px;
+  }
+
+  .chapter-exhibition__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chapter-exhibition__grid--left .exhibition-sheet,
+  .chapter-exhibition__grid--right .exhibition-sheet {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    max-width: none;
+  }
+}
+
+/* ---------------------------------------------------------
+   MOBILE (< 768px): Portrait 3D Crown + Thumb-Ready Editorial
+   --------------------------------------------------------- */
+@media (max-width: 767px) {
+  .chapter-hero__layout {
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 14px);
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .hero-display {
+    font-size: clamp(3.6rem, 17vw, 5.2rem);
+  }
+
+  .hero-statement {
+    font-size: 15.5px;
+  }
+
+  .chapter--exhibition {
+    padding-top: 41vh;
+    padding-bottom: calc(38px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .exhibition-sheet {
+    padding: 18px;
+    gap: 12px;
+    border-radius: 18px;
+  }
+
+  .exhibition-sheet__title {
+    font-size: 1.75rem;
+  }
+
+  .exhibition-sheet__body {
+    font-size: 13.8px;
+    line-height: 1.62;
+  }
+
+  .asterism-wordmark-lockup {
+    padding: 8px 12px;
+  }
+
+  .asterism-wordmark-lockup img {
+    width: 170px;
+  }
+
+  .studio-tab {
+    min-height: 38px;
+    font-size: 12px;
+    padding: 0 6px;
+  }
+
+  .exhibition-sheet__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .exhibition-sheet__actions .btn {
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 13.5px;
+  }
+
+  .exhibition-sheet__actions .btn--asterism-detail {
+    grid-column: 1 / -1;
+  }
+}

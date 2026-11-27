@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteNavigation } from './components/SiteNavigation';
 import { getProjectBySlug } from './data/projects';
@@ -12,6 +12,7 @@ import { ProjectDetailPage } from './pages/ProjectDetailPage';
 export function App() {
   const viewport = useViewportProfile();
   const { route, navigate, isTransitioning } = useRouter();
+  const [isLightHomeSurface, setIsLightHomeSurface] = useState(false);
 
   useEffect(() => {
     if (route.view === 'home') {
@@ -36,10 +37,21 @@ export function App() {
         본문으로 바로가기
       </a>
 
-      <SiteNavigation route={route} viewport={viewport} onNavigate={navigate} />
+      <SiteNavigation
+        route={route}
+        viewport={viewport}
+        isLightHomeSurface={isLightHomeSurface}
+        onNavigate={navigate}
+      />
 
       <main id="main-content" className="app-main" tabIndex={-1}>
-        {route.view === 'home' && <HomePage viewport={viewport} onNavigate={navigate} />}
+        {route.view === 'home' && (
+          <HomePage
+            viewport={viewport}
+            onNavigate={navigate}
+            onHeaderPolarityChange={setIsLightHomeSurface}
+          />
+        )}
         {route.view === 'project' && (
           <ProjectDetailPage slug={route.slug} onNavigate={navigate} />
         )}

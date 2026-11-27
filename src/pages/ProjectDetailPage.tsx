@@ -46,7 +46,7 @@ export function ProjectDetailPage({ slug, onNavigate }: ProjectDetailPageProps) 
               className="pd-back mono"
               onClick={() => onNavigate('/')}
             >
-              ← 3D 공간으로
+              ← 홈으로
             </button>
             <span className="mono pd-index">
               {project.indexLabel} / {String(PROJECTS.length).padStart(2, '0')}

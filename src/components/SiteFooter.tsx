@@ -44,7 +44,7 @@ export function SiteFooter({ onNavigate }: SiteFooterProps) {
                       onNavigate('/');
                     }}
                   >
-                    3D 공간
+                    홈
                   </a>
                 </li>
                 <li>
