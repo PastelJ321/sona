@@ -1,0 +1,631 @@
+/* =========================================================
+   CURATED EXHIBITION HALL — Two Distinct Architectural Worlds
+   ========================================================= */
+.works-hall {
+  background: var(--porcelain);
+  padding-top: clamp(64px, 8vw, 110px);
+  scroll-margin-top: calc(var(--header-h) + 8px);
+}
+
+.works-hall__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px 64px;
+  align-items: end;
+  padding-bottom: clamp(32px, 4vw, 52px);
+}
+
+.works-hall__intro {
+  margin: 0;
+  color: var(--ink-dark-muted);
+  font-size: 16px;
+  line-height: 1.75;
+  max-width: 48ch;
+}
+
+.works-hall__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual Exhibition Spread */
+.exhibition {
+  background: var(--ex-surface);
+  color: var(--ex-ink);
+  padding: clamp(64px, 7.5vw, 108px) 0;
+  border-top: 1px solid var(--ex-border);
+  border-bottom: 1px solid var(--ex-border);
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: var(--header-h);
+}
+
+/* Subtle authentic sky glow for 서준이네 오락실 without garish neon */
+.exhibition--seojun-arcade {
+  background:
+    radial-gradient(circle at 82% 16%, rgba(94, 242, 200, 0.12), transparent 44%),
+    radial-gradient(circle at 14% 88%, rgba(255, 126, 182, 0.14), transparent 48%),
+    linear-gradient(160deg, #1b1640 0%, #241b52 55%, #171336 100%);
+}
+
+/* Crisp daylight paper atelier tone for Asterism Write */
+.exhibition--asterism-write {
+  background:
+    radial-gradient(ellipse at 85% 15%, rgba(91, 117, 255, 0.09), transparent 52%),
+    linear-gradient(180deg, #f7f8fc 0%, #eef2f8 100%);
+}
+
+.exhibition__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 22px;
+  margin-bottom: clamp(28px, 4vw, 48px);
+  border-bottom: 1px solid var(--ex-border);
+}
+
+.exhibition__catalog {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ex-muted);
+}
+
+.exhibition__num {
+  color: var(--ex-ink);
+  font-weight: 500;
+}
+
+.exhibition__authorship {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.exhibition__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--ex-badge-bg);
+  color: var(--ex-badge-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.exhibition__status {
+  font-size: 12px;
+  color: var(--ex-muted);
+}
+
+/* Asymmetric 12-column Desktop Split */
+.exhibition__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.16fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+
+.exhibition__info,
+.exhibition__stage-col {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Official Asterism Write Wordmark Plate (Zero inversion, preserves original RGBA) */
+.exhibition__wordmark-wrap {
+  margin-bottom: 18px;
+}
+
+.exhibition__wordmark-plate {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(23, 28, 40, 0.08);
+  box-shadow: 0 8px 24px rgba(23, 28, 40, 0.06);
+}
+
+.exhibition__wordmark-plate--lg {
+  padding: 14px 22px;
+}
+
+.exhibition__wordmark-img {
+  width: clamp(200px, 24vw, 310px);
+  height: auto;
+}
+
+.exhibition__arcade-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: #ffd23f;
+  color: #1b1640;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.exhibition__title {
+  margin: 0 0 14px;
+  font-size: clamp(2.1rem, 4vw, 3.6rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.exhibition__tagline {
+  margin: 0 0 14px;
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+
+.exhibition__description {
+  margin: 0 0 24px;
+  color: var(--ex-muted);
+  font-size: 15.5px;
+  line-height: 1.78;
+}
+
+/* Metadata Grid */
+.exhibition__meta {
+  margin: 0 0 26px;
+  padding: 18px 0;
+  border-top: 1px solid var(--ex-border);
+  border-bottom: 1px solid var(--ex-border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.exhibition__meta dt {
+  font-size: 11px;
+  color: var(--ex-muted);
+  margin-bottom: 5px;
+}
+
+.exhibition__meta dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.exhibition__meta dd strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.exhibition__meta dd span {
+  font-size: 13px;
+  color: var(--ex-muted);
+}
+
+/* Sub-games & Formats */
+.exhibition__sublabel {
+  margin: 0 0 12px;
+  font-size: 11px;
+  color: var(--ex-muted);
+}
+
+.subgames-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.subgame-card {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 192, 255, 0.22);
+  transition:
+    transform 0.22s var(--ease-tactile),
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.subgame-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--game-accent);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.subgame-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.subgame-card__genre {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--game-accent) 22%, transparent);
+  color: var(--game-accent);
+}
+
+.subgame-card__arrow {
+  color: var(--game-accent);
+  font-weight: 700;
+}
+
+.subgame-card__title {
+  font-size: 15.5px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.subgame-card__summary {
+  margin: 0;
+  font-size: 12.8px;
+  line-height: 1.58;
+  color: var(--ex-muted);
+}
+
+/* Official Format Icon Strip for Asterism Write */
+.format-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.format-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(23, 28, 40, 0.09);
+}
+
+.format-chip img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.format-chip strong {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-dark);
+}
+
+.format-chip span {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-dark-muted);
+  line-height: 1.3;
+}
+
+/* Exhibition Action Buttons */
+.exhibition__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.exhibition__btn-primary {
+  background: var(--ex-accent);
+  color: var(--ex-accent-ink);
+  border-color: var(--ex-accent);
+}
+
+.exhibition__btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.exhibition__btn-secondary {
+  background: transparent;
+  color: var(--ex-ink);
+  border-color: var(--ex-border);
+}
+
+.exhibition__btn-secondary:hover {
+  background: color-mix(in srgb, var(--ex-ink) 8%, transparent);
+}
+
+.exhibition__btn-detail {
+  background: color-mix(in srgb, var(--ex-ink) 9%, transparent);
+  color: var(--ex-ink);
+  border-color: transparent;
+}
+
+.exhibition__btn-detail:hover {
+  background: color-mix(in srgb, var(--ex-ink) 16%, transparent);
+}
+
+/* Interactive Media Frame */
+.exhibition__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.exhibition__frame {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--ex-elevated);
+  border: 1px solid var(--ex-border);
+  box-shadow: 0 28px 70px rgba(8, 12, 22, 0.22);
+  transition: transform 0.28s var(--ease-out-expo);
+  will-change: transform;
+}
+
+.exhibition--light .exhibition__frame {
+  box-shadow: 0 24px 60px rgba(28, 42, 74, 0.13);
+}
+
+.exhibition__frame-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ex-border);
+  background: color-mix(in srgb, var(--ex-elevated) 84%, var(--ex-surface));
+}
+
+.exhibition__frame-dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.exhibition__frame-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ex-ink) 22%, transparent);
+}
+
+.exhibition__frame-url {
+  font-size: 11.5px;
+  color: var(--ex-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exhibition__frame-icon {
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.exhibition__viewport {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #0d1018;
+  overflow: hidden;
+}
+
+.exhibition--light .exhibition__viewport {
+  background: #e9edf5;
+}
+
+.exhibition__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.exhibition__viewport.is-tall .exhibition__img {
+  object-fit: contain;
+  background: #1a1f29;
+}
+
+.exhibition__switcher {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exhibition__tab {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ex-ink) 5%, transparent);
+  border: 1px solid var(--ex-border);
+  color: var(--ex-muted);
+  text-align: left;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.exhibition__tab:hover {
+  color: var(--ex-ink);
+  border-color: color-mix(in srgb, var(--ex-ink) 35%, transparent);
+}
+
+.exhibition__tab.is-active {
+  background: var(--ex-accent);
+  color: var(--ex-accent-ink);
+  border-color: var(--ex-accent);
+  font-weight: 600;
+}
+
+.exhibition__tab-idx {
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+.exhibition__tab-label {
+  font-size: 13.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exhibition__caption {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--ex-muted);
+  line-height: 1.6;
+}
+
+/* Tablet Landscape Split Gallery (1024px) */
+.exhibition--tablet-split .exhibition__grid {
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.exhibition--tablet-split .format-strip {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Tablet Portrait & Mobile (< 1024px) */
+@media (max-width: 1023px) {
+  .works-hall__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .exhibition .exhibition__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+
+  .exhibition__stage-col {
+    order: -1;
+  }
+}
+
+/* Mobile Tactile Carousel (< 768px) */
+.exhibition__mobile-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.exhibition__carousel {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 12px;
+  border-radius: var(--radius-md);
+}
+
+.exhibition__carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.exhibition__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--ex-elevated);
+  border: 1px solid var(--ex-border);
+}
+
+.exhibition__slide-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 13px;
+  font-size: 11px;
+  color: var(--ex-muted);
+  border-bottom: 1px solid var(--ex-border);
+}
+
+.exhibition__slide-img-wrap {
+  aspect-ratio: 16 / 10;
+  background: #141923;
+  overflow: hidden;
+}
+
+.exhibition__slide-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.exhibition__slide figcaption {
+  padding: 11px 13px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ex-muted);
+}
+
+.exhibition__dots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.exhibition__dot-btn {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--ex-border);
+  background: transparent;
+  color: var(--ex-muted);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exhibition__dot-btn.is-active {
+  background: var(--ex-accent);
+  color: var(--ex-accent-ink);
+  border-color: var(--ex-accent);
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .exhibition__meta {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .subgames-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .format-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .exhibition__actions {
+    flex-direction: column;
+  }
+
+  .exhibition__actions .btn {
+    width: 100%;
+  }
+}

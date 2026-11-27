@@ -1,0 +1,78 @@
+@font-face {
+  font-family: 'IBM Plex Sans KR';
+  src: url('/fonts/IBMPlexSansKR-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans KR';
+  src: url('/fonts/IBMPlexSansKR-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans KR';
+  src: url('/fonts/IBMPlexSansKR-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans KR';
+  src: url('/fonts/IBMPlexSansKR-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-Regular.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Core SONA Living Signal Palette */
+  --basalt: #11141a;
+  --basalt-elevated: #191e27;
+  --basalt-soft: #232a36;
+  --porcelain: #f0eee8;
+  --porcelain-paper: #f7f5f0;
+  --porcelain-deep: #e4e0d7;
+  --iris: #5b75ff;
+  --iris-deep: #3d56df;
+  --vermilion: #f4654d;
+  --acid-lime: #d9f56c;
+
+  /* Semantic Ink & Borders */
+  --ink-dark: #11141a;
+  --ink-dark-muted: #4b5362;
+  --ink-light: #f0eee8;
+  --ink-light-muted: rgba(240, 238, 232, 0.72);
+  --line-dark: rgba(17, 20, 26, 0.14);
+  --line-light: rgba(240, 238, 232, 0.16);
+
+  /* Typography */
+  --font-sans: 'IBM Plex Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Layout & Spacing */
+  --container-max: 1420px;
+  --gutter: clamp(18px, 4vw, 52px);
+  --header-h: 68px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-tactile: cubic-bezier(0.22, 1, 0.36, 1);
+}

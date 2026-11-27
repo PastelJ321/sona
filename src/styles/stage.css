@@ -1,0 +1,378 @@
+/* =========================================================
+   LIVING SIGNAL HERO STAGE — Basalt Interactive Canvas
+   ========================================================= */
+.signal-stage {
+  position: relative;
+  min-height: 100svh;
+  min-height: 100dvh;
+  background: var(--basalt);
+  color: var(--porcelain);
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.signal-stage__gl,
+.signal-stage__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.signal-stage__gl {
+  z-index: 1;
+}
+
+.signal-stage__overlay {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.signal-stage__inner {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(24px, 4vh, 44px);
+  padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(22px, 4vh, 44px));
+  padding-bottom: clamp(24px, 3.6vh, 38px);
+  pointer-events: none;
+}
+
+.signal-stage__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.signal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 13px;
+  border-radius: var(--radius-pill);
+  background: rgba(17, 20, 26, 0.56);
+  border: 1px solid rgba(240, 238, 232, 0.16);
+  backdrop-filter: blur(10px);
+  font-size: 11px;
+  color: rgba(240, 238, 232, 0.88);
+}
+
+.signal-pill__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--acid-lime);
+  box-shadow: 0 0 12px rgba(217, 245, 108, 0.65);
+}
+
+.signal-telemetry {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: rgba(240, 238, 232, 0.72);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(17, 20, 26, 0.45);
+  border: 1px solid rgba(240, 238, 232, 0.1);
+}
+
+.signal-telemetry__sep {
+  opacity: 0.4;
+}
+
+.signal-stage__hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: end;
+  gap: clamp(24px, 4vw, 64px);
+  margin-block: auto;
+}
+
+.signal-stage__copy {
+  max-width: 650px;
+}
+
+.signal-stage__kicker {
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: var(--acid-lime);
+}
+
+.signal-stage__title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signal-stage__wordmark {
+  font-size: clamp(3.6rem, 8.8vw, 7.2rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  color: var(--porcelain);
+}
+
+.signal-stage__subhead {
+  font-size: clamp(1.35rem, 2.5vw, 2.15rem);
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.03em;
+  color: rgba(240, 238, 232, 0.94);
+}
+
+.signal-stage__lead {
+  margin: 20px 0 0;
+  max-width: 46ch;
+  font-size: clamp(15px, 1.25vw, 17px);
+  line-height: 1.72;
+  color: var(--ink-light-muted);
+}
+
+.signal-stage__actions {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.signal-stage__canvas-cue {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.signal-cue-card {
+  max-width: 280px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(17, 20, 26, 0.56);
+  border: 1px solid rgba(240, 238, 232, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+.signal-cue-card__code {
+  display: block;
+  font-size: 10.5px;
+  color: var(--acid-lime);
+  margin-bottom: 6px;
+}
+
+.signal-cue-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(240, 238, 232, 0.8);
+}
+
+/* Bottom Harmonic Instrument Console */
+.signal-console {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: rgba(17, 20, 26, 0.72);
+  border: 1px solid rgba(240, 238, 232, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.signal-console__modes,
+.signal-console__tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.signal-mode-btn,
+.signal-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(240, 238, 232, 0.14);
+  background: rgba(240, 238, 232, 0.04);
+  color: rgba(240, 238, 232, 0.84);
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.18s ease;
+}
+
+.signal-mode-btn:hover,
+.signal-tool-btn:hover {
+  background: rgba(240, 238, 232, 0.12);
+  border-color: rgba(240, 238, 232, 0.3);
+}
+
+.signal-mode-btn.is-active {
+  background: var(--porcelain);
+  color: var(--basalt);
+  border-color: var(--porcelain);
+  font-weight: 600;
+}
+
+.signal-mode-btn__en {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.signal-tool-btn.is-active {
+  background: rgba(91, 117, 255, 0.24);
+  border-color: var(--iris);
+  color: var(--porcelain);
+}
+
+.signal-tool-btn__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--vermilion);
+}
+
+/* Tablet Portrait (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .signal-stage {
+    min-height: 82dvh;
+  }
+
+  .signal-stage__hero-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .signal-stage__canvas-cue {
+    justify-content: flex-start;
+  }
+}
+
+/* Mobile (< 768px): Tactile vertical rhythm with clear space above thumb dock */
+@media (max-width: 767px) {
+  .signal-stage {
+    min-height: 100svh;
+  }
+
+  .signal-stage__inner {
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 16px);
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+    gap: 18px;
+  }
+
+  .signal-telemetry {
+    display: none;
+  }
+
+  .signal-stage__hero-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .signal-stage__wordmark {
+    font-size: clamp(3.15rem, 15.5vw, 4.3rem);
+  }
+
+  .signal-stage__subhead {
+    font-size: clamp(1.2rem, 5.2vw, 1.5rem);
+  }
+
+  .signal-stage__lead {
+    margin-top: 12px;
+    font-size: 14.5px;
+    line-height: 1.64;
+  }
+
+  .signal-stage__actions {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .signal-stage__actions .btn {
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+  .signal-stage__canvas-cue {
+    justify-content: flex-start;
+  }
+
+  .signal-cue-card {
+    max-width: none;
+    width: fit-content;
+    padding: 8px 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .signal-cue-card__code {
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+
+  .signal-cue-card p {
+    font-size: 12px;
+  }
+
+  .signal-console {
+    padding: 8px;
+    gap: 8px;
+    border-radius: 15px;
+  }
+
+  .signal-console__modes {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+
+  .signal-mode-btn {
+    justify-content: center;
+    padding: 0 8px;
+    font-size: 12.5px;
+    min-height: 40px;
+  }
+
+  .signal-console__tools {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .signal-tool-btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 40px;
+    font-size: 12.5px;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .signal-stage__actions {
+    grid-template-columns: 1fr;
+  }
+}
